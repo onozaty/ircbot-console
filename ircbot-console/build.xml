@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="ircbot">
+    <property name="dist.dir" value="dist"/>
+    <property name="classes.dir" value="webapp/WEB-INF/classes"/>
+    <path id="classpath">
+        <pathelement location="${classes.dir}"/>
+        <fileset dir="lib_jetty">
+          <include name="*.jar" />
+        </fileset>
+        <fileset dir="webapp/WEB-INF/lib">
+          <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="init">
+        <delete dir="${dist.dir}" />
+        <mkdir dir="${dist.dir}" />
+        <delete dir="${classes.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <copy includeemptydirs="false" todir="${classes.dir}">
+            <fileset dir="src/main/resources" />
+        </copy>
+    </target>
+    <target depends="init,compile,war,jettyfiles" name="build">
+    </target>
+    <target name="compile">
+        <javac encoding="utf-8" debug="true" destdir="${classes.dir}">
+            <src path="src/main/java"/>
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <target name="JettyRun">
+        <java classname="JettyRun" failonerror="true" fork="yes">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+    <target name="war">
+        <war destfile="${dist.dir}/ircbot.war"
+            webxml="webapp/WEB-INF/web.xml">
+            <fileset dir="webapp/" excludes="**/web.xml" />
+        </war>
+    </target>
+
+    <target name="jettyfiles">
+        <copy todir="${dist.dir}/lib_jetty">
+            <fileset dir="lib_jetty" />
+        </copy>
+        <copy file="startup.bat" todir="${dist.dir}" />
+        <copy file="startup.sh" todir="${dist.dir}" />
+        <javac encoding="utf-8" debug="true" destdir="${dist.dir}">
+            <src path="src/jetty/java"/>
+            <classpath refid="classpath"/>
+        </javac>
+
+        <zip destfile="ircbot_console-0.1.zip" basedir="${dist.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+</project>

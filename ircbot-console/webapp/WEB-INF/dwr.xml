@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+
+<dwr>
+
+  <allow>
+
+    <create creator="new" javascript="IrcBotServer" scope="application">
+      <param name="class" value="com.enjoyxstudy.ircbotconsole.IrcBotServerAdapter"/>
+    </create>
+
+    <create creator="new" javascript="LogViewer" scope="application">
+      <param name="class" value="com.enjoyxstudy.ircbotconsole.LogViewer"/>
+    </create>
+
+    <convert converter="exception" match="java.lang.Exception"/>
+    <convert converter="bean" match="java.lang.StackTraceElement"/>
+    <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.Config"/>
+
+  </allow>
+
+</dwr>

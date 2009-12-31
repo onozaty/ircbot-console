@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ircbot console</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="header"><span class="toplink"><a href="./">Top</a></span>ircbot console</div>
+      <div id="contents">
+        <h1>接続情報</h1>
+        <table>
+          <tr>
+            <th style="width:30%;">接続状態</th>
+            <td><span id="status">-</span></td>
+          </tr>
+          <tr>
+            <th>ホスト名</th>
+            <td><input id="serverName" name="serverName" type="text" size="30"></input></td>
+          </tr>
+          <tr>
+            <th>ポート番号</th>
+            <td><input id="serverPort" name="serverPort" type="text" size="10"></input></td>
+          </tr>
+          <tr>
+            <th>パスワード</th>
+            <td><input id="serverPassword" name="serverPassword" type="text" size="20"></input></td>
+          </tr>
+          <tr>
+            <th>ニックネーム</th>
+            <td><input id="nick" name="nick" type="text" size="20"></input></td>
+          </tr>
+          <tr>
+            <th>文字コード</th>
+            <td><input id="encoding" name="encoding" type="text" size="20"></input></td>
+          </tr>
+        </table>
+        <div class="right">
+          <input id="updateConnectButton" name="updateConnect" type="button" value="接続情報更新"></input>
+        </div>
+
+        <h1>チャンネル情報</h1>
+        <table id="channelTable">
+          <tr>
+            <th>チャンネル</th>
+          </tr>
+        </table>
+        <div class="right">
+          <input id="channelName" name="channel" type="text" size="20"></input><input id="addChannelButton" name="addChannel" type="button" value="チャンネル追加"></input>
+        </div>
+      </div>
+      <div id="footer"><a href="http://www.enjoyxstudy.com/ircbotconsole/">ircbot console project site</a></div>
+    </div>
+    <div id="disabledZone">
+      <div id="messageZone">loading</div>
+    </div>
+    <script src="./dwr/interface/IrcBotServer.js" type="text/javascript"></script>
+    <script src="./dwr/engine.js" type="text/javascript"></script>
+    <script src="./dwr/util.js" type="text/javascript"></script>
+    <script src="./jquery-1.3.2.min.js" type="text/javascript"></script>
+    <script src="./index.js" type="text/javascript"></script>
+  </body>
+</html>
