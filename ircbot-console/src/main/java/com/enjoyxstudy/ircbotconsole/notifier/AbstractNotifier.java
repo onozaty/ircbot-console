@@ -12,8 +12,8 @@ public abstract class AbstractNotifier implements Notifier {
     /** 実行中を表すフラグです。 */
     protected boolean isRunning;
 
-    /** 通知先です。 */
-    protected String target;
+    /** 通知先チャンネルです。 */
+    protected String channel;
 
     /** 次の通知日時を管理するクラスです。 */
     protected Scheduler scheduler;
@@ -21,12 +21,12 @@ public abstract class AbstractNotifier implements Notifier {
     /**
      * コンストラクタです。
      *
-     * @param target
+     * @param channel
      * @param scheduler
      */
-    public AbstractNotifier(String target, Scheduler scheduler) {
+    public AbstractNotifier(String channel, Scheduler scheduler) {
         super();
-        this.target = target;
+        this.channel = channel;
         this.scheduler = scheduler;
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractNotifier implements Notifier {
      * @param messages
      */
     protected void notifyMessage(IrcBot ircBot, String[] messages) {
-        ircBot.sendMessages(target, messages);
+        ircBot.sendMessages(channel, messages);
     }
 
     /**

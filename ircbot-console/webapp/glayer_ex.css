@@ -1,0 +1,50 @@
+/* Box Base */
+div.glayer_box {
+  position: fixed!important;
+  position: absolute;
+  z-index: 101;
+/*  width: 400px; */
+  padding: 2px;
+  border: 5px solid #B8B8B8;
+  background-color: #FFFFFF;
+}
+
+/* Message */
+p#glayer_message_text {
+  margin: 2px;
+  padding: 2px;
+  text-align: center;
+}
+
+/* Alert */
+p#glayer_alert_text {
+  margin: 2px;
+  padding: 2px;
+  text-align: center;
+}
+p#glayer_alert_button {
+  margin: 10px 0 0 0;
+  padding: 0;
+  text-align: center;
+}
+input#glayer_alert_ok {
+  font-size: 80%;
+}
+
+/* Confirm */
+p#glayer_confirm_text {
+  margin: 2px;
+  padding: 2px;
+  text-align: center;
+}
+p#glayer_confirm_button {
+  margin: 10px 0 0 0;
+  padding: 0;
+  text-align: center;
+}
+input#glayer_confirm_ok {
+  font-size: 80%;
+}
+input#glayer_confirm_cancel {
+  font-size: 80%;
+}

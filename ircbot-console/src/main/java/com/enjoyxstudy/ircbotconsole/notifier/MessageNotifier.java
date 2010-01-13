@@ -15,12 +15,12 @@ public class MessageNotifier extends AbstractNotifier {
     /**
      * コンストラクタです。
      *
-     * @param target
+     * @param channel
      * @param scheduler
      * @param message
      */
-    public MessageNotifier(String target, Scheduler scheduler, String message) {
-        super(target, scheduler);
+    public MessageNotifier(String channel, Scheduler scheduler, String message) {
+        super(channel, scheduler);
         this.message = message;
     }
 

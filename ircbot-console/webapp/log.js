@@ -23,12 +23,14 @@ var loadLogFiles = function(logFiles) {
       $('#logView').show();
 
       $('#backList').show();
-    })
+    });
+    return false;
   });
 }
 
 $('#backList').click(function() {
   LogViewer.getFiles(channel, loadLogFiles);
+  return false;
 });
 
 $('#backList').hide();

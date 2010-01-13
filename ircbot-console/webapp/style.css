@@ -94,6 +94,12 @@ span.icons {
   float: right;
 }
 
+pre {
+  padding: 4px;
+  border: solid 1px #737373;
+  background-color: #FFFFFF;
+}
+
 div#loading {
   position: absolute;
   top: 0;

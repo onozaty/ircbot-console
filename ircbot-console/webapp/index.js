@@ -29,15 +29,15 @@ var addChannelRow = function(channel) {
       .append($('<span>').attr('class', 'icons')
         .append(
           $('<a href="javascript:void(0)"><img src="./comment.gif"></img>ログ</a>')
-            .click(function() { goLogView(channel) }))
+            .click(function() { goLogView(channel); return false; }))
         .append('&nbsp;')
         .append(
           $('<a href="javascript:void(0)"><img src="./page_edit.gif"></img>設定</a>')
-            .click(function() { goChannelSetting(channel) }))
+            .click(function() { goChannelSetting(channel); return false; }))
         .append('&nbsp;')
         .append(
           $('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
-            .click(function() { removeChannel(channel, this.parentNode.parentNode.parentNode) })))
+            .click(function() { removeChannel(channel, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(channel));
 }
 

@@ -1,69 +1,348 @@
-var rssNotiferFeeds = null;
-
-var loadRssNotiferFeeds = function(_rssNotiferFeeds) {
-  rssNotiferFeeds = _rssNotiferFeeds;
-  if (rssNotiferFeeds == null) {
-    rssNotiferFeeds = [];
+// RSS通知
+var rssNotifierFeeds = [];
+var loadRssNotifierFeeds = function(_rssNotifierFeeds) {
+  rssNotifierFeeds = _rssNotifierFeeds;
+  if (rssNotifierFeeds == null) {
+    rssNotifierFeeds = [];
   }
 
   // RSS通知フィード情報更新
   // いったんすべて削除
-  var table = $('#rssNotiferTable')[0];
+  var table = $('#rssNotifierTable')[0];
   while(table.rows.length > 1) {
     table.deleteRow(1);
   }
 
-  for(var i = 0, len = rssNotiferFeeds.length; i < len; i++) {
-    addRssNotiferRow(rssNotiferFeeds[i]);
+  for(var i = 0, len = rssNotifierFeeds.length; i < len; i++) {
+    addRssNotifierRow(rssNotifierFeeds[i]);
   }
 
 }
 
-var addRssNotiferRow = function(feed) {
-  var table = $('#rssNotiferTable')[0];
+var addRssNotifierRow = function(feed) {
+  var table = $('#rssNotifierTable')[0];
   var tr = table.insertRow(table.rows.length);
   $(tr)
     .append('<td>').children()
       .append($('<span>')
         .attr('class', 'icons')
         .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
-          .click(function() { removeRssNotifer(feed, this.parentNode.parentNode.parentNode) })))
+          .click(function() { removeRssNotifier(feed, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(feed));
 }
 
-var removeRssNotifer = function(feed, elm) {
+var removeRssNotifier = function(feed, elm) {
   elm.parentNode.removeChild(elm);
 
-  for(var i = 0, len = rssNotiferFeeds.length; i < len; i++) {
-    if(rssNotiferFeeds[i] == feed){
-      rssNotiferFeeds.splice(i,1);
+  for(var i = 0, len = rssNotifierFeeds.length; i < len; i++) {
+    if(rssNotifierFeeds[i] == feed){
+      rssNotifierFeeds.splice(i,1);
     }
   }
 
-  IrcBotServer.removeRssNotifer(channel, feed);
+  IrcBotServer.removeRssNotifier(channel, feed);
 }
 
-
-$('#addRssNotiferButton').click(
+$('#addRssNotifierButton').click(
   function() {
-    var feed = $('#rssNotiferFeed').val();
+    var feed = $('#rssNotifierFeed').val();
 
     if (feed == '') {
       alert('RSSフィードが未入力です。');
       return false;
     }
-    if ($.inArray(feed, rssNotiferFeeds) != -1) {
+    if ($.inArray(feed, rssNotifierFeeds) != -1) {
       // 既に存在
       alert('既に登録されているRSSフィードです。');
       return false;
     }
-    addRssNotiferRow(feed);
-    rssNotiferFeeds.push(feed);
-    $('#rssNotiferFeed').val('');
+    addRssNotifierRow(feed);
+    rssNotifierFeeds.push(feed);
+    $('#rssNotifierFeed').val('');
 
-    IrcBotServer.addRssNotifer(channel, feed);
+    IrcBotServer.addRssNotifier(channel, feed);
   }
 );
+
+
+// 周期スクリプト
+var scriptNotifierConfig = [];
+var loadScriptNotifierConfig = function(_scriptNotifierConfig) {
+  scriptNotifierConfig = _scriptNotifierConfig;
+  if (scriptNotifierConfig == null) {
+    scriptNotifierConfig = [];
+  }
+
+  // 周期スクリプト情報更新
+  resetScriptNotifierTable();
+}
+
+var resetScriptNotifierTable = function() {
+  // いったんすべて削除
+  var table = $('#scriptNotifierTable')[0];
+  while(table.rows.length > 1) {
+    table.deleteRow(1);
+  }
+
+  for(var i = 0, len = scriptNotifierConfig.length; i < len; i++) {
+    addScriptNotifierRow(scriptNotifierConfig[i]);
+  }
+}
+
+var addScriptNotifierRow = function(scriptNotifier) {
+  var table = $('#scriptNotifierTable')[0];
+  var tr = table.insertRow(table.rows.length);
+
+  var index = table.rows.length - 2;
+
+  setScriptNotifierRowValue(scriptNotifier, tr, index);
+}
+
+var setScriptNotifierRowValue = function(scriptNotifier, tr, index) {
+  var typeString = '';
+  if (scriptNotifier.type == 0) {
+    typeString = '周期 ' + scriptNotifier.cyclicSpan + '分';
+  } else {
+    typeString = '毎日 ' + scriptNotifier.dailyHour + '時' + scriptNotifier.dailyMinute + '分';
+  }
+
+  $(tr)
+    .append('<td>').children()
+      .append($('<span>')
+        .attr('class', 'icons')
+        .append(
+          $('<a href="javascript:void(0)"><img src="./page_edit.gif"></img>変更</a>')
+            .click(function() { editScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; }))
+        .append('&nbsp;')
+        .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
+          .click(function() { removeScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
+      .append($('<span>').text(typeString))
+      .append($('<pre>').text(scriptNotifier.scriptText));
+}
+
+var removeScriptNotifier = function(index, elm) {
+
+  scriptNotifierConfig.splice(index, 1);
+
+  // 周期スクリプト情報更新
+  resetScriptNotifierTable();
+
+  IrcBotServer.updateScriptNotifier(channel, scriptNotifierConfig);
+}
+
+var editScriptNotifierIndex = null;
+var editScriptNotifier = function(index, elm) {
+
+  Glayer.showBox($('#scriptNotifierSettingBox')[0]);
+
+  var config = scriptNotifierConfig[index];
+
+  $('#scriptNotifierText').val(config.scriptText);
+
+  if (config.type == 0) {
+    $('#scriptNotifierTypeCycle').attr('checked', true);
+  } else {
+    $('#scriptNotifierTypeDaily').attr('checked', true);
+  }
+
+  $('#scriptNotifierCycleSapn').val(config.cyclicSpan);
+  $('#scriptNotifierDailyHour').val(config.dailyHour);
+  $('#scriptNotifierDailyMinute').val(config.dailyMinute);
+
+  scriptNotifierTypeChange();
+
+  editScriptNotifierIndex = index;
+}
+
+$('#addScriptNotifierButton').click(
+  function() {
+    Glayer.showBox($('#scriptNotifierSettingBox')[0]);
+
+    // 初期化
+    $('#scriptNotifierTypeCycle').attr('checked', true);
+    $('#scriptNotifierText').val('');
+    $('#scriptNotifierCycleSapn').val('');
+    $('#scriptNotifierDailyHour').val(0);
+    $('#scriptNotifierDailyMinute').val(0);
+
+    scriptNotifierTypeChange();
+  }
+);
+
+$('#scriptNotifierSaveButton').click(
+  function() {
+    Glayer.hideBox($('#scriptNotifierSettingBox')[0]);
+
+    var config = {};
+
+    if ($('#scriptNotifierTypeCycle').attr('checked')) {
+      config.type = 0;
+      config.cyclicSpan = $('#scriptNotifierCycleSapn').val();
+    } else {
+      config.type = 1;
+      config.dailyHour = $('#scriptNotifierDailyHour').val();
+      config.dailyMinute = $('#scriptNotifierDailyMinute').val();
+    }
+
+    config.scriptText = $('#scriptNotifierText').val();
+
+    if (editScriptNotifierIndex == null) {
+
+      // 追加処理
+      scriptNotifierConfig.push(config);
+
+    } else {
+
+      // 更新処理
+      scriptNotifierConfig[editScriptNotifierIndex] = config;
+    }
+
+    // 周期スクリプト情報更新
+    resetScriptNotifierTable();
+
+    IrcBotServer.updateScriptNotifier(channel, scriptNotifierConfig);
+  }
+);
+
+$('#scriptNotifierCancelButton').click(
+  function() {
+    Glayer.hideBox($('#scriptNotifierSettingBox')[0]);
+  }
+);
+
+var scriptNotifierTypeChange = function() {
+  if ($('#scriptNotifierTypeCycle').attr('checked')) {
+    $('#scriptNotifierCycleSapn').removeAttr('disabled');
+  } else {
+    $('#scriptNotifierCycleSapn').attr('disabled', 'disabled');
+  }
+
+  if ($('#scriptNotifierTypeDaily').attr('checked')) {
+    $('#scriptNotifierDailyHour').removeAttr('disabled');
+    $('#scriptNotifierDailyMinute').removeAttr('disabled');
+  } else {
+    $('#scriptNotifierDailyHour').attr('disabled', 'disabled');
+    $('#scriptNotifierDailyMinute').attr('disabled', 'disabled');
+  }
+}
+
+$('#scriptNotifierTypeCycle')
+  .change(scriptNotifierTypeChange)
+  .focus(scriptNotifierTypeChange);
+$('#scriptNotifierTypeDaily')
+  .change(scriptNotifierTypeChange)
+  .focus(scriptNotifierTypeChange);
+
+
+// メッセージ受信スクリプト
+var scriptProcessorConfig = [];
+var loadScriptProcessorConfig = function(_scriptProcessorConfig) {
+  scriptProcessorConfig = _scriptProcessorConfig;
+  if (scriptProcessorConfig == null) {
+    scriptProcessorConfig = [];
+  }
+
+  // メッセージ受信スクリプト情報更新
+  resetScriptProcessorTable();
+}
+
+var resetScriptProcessorTable = function() {
+  // いったんすべて削除
+  var table = $('#scriptProcessorTable')[0];
+  while(table.rows.length > 1) {
+    table.deleteRow(1);
+  }
+
+  for(var i = 0, len = scriptProcessorConfig.length; i < len; i++) {
+    addScriptProcessorRow(scriptProcessorConfig[i]);
+  }
+}
+
+var addScriptProcessorRow = function(scriptText) {
+  var table = $('#scriptProcessorTable')[0];
+  var tr = table.insertRow(table.rows.length);
+
+  var index = table.rows.length - 2;
+
+  setScriptProcessorRowValue(scriptText, tr, index);
+}
+
+var setScriptProcessorRowValue = function(scriptText, tr, index) {
+
+  $(tr)
+    .append('<td>').children()
+      .append($('<span>')
+        .attr('class', 'icons')
+        .append(
+          $('<a href="javascript:void(0)"><img src="./page_edit.gif"></img>変更</a>')
+            .click(function() { editScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; }))
+        .append('&nbsp;')
+        .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
+          .click(function() { removeScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; })))
+      .append($('<pre style="clear:both;">').text(scriptText));
+}
+
+var removeScriptProcessor = function(index, elm) {
+
+  scriptProcessorConfig.splice(index, 1);
+
+  // メッセージ受信スクリプト情報更新
+  resetScriptProcessorTable();
+
+  IrcBotServer.updateScriptProcessor(channel, scriptProcessorConfig);
+}
+
+var editScriptProcessorIndex = null;
+var editScriptProcessor = function(index, elm) {
+
+  Glayer.showBox($('#scriptProcessorSettingBox')[0]);
+
+  var scriptText = scriptProcessorConfig[index];
+
+  $('#scriptProcessorText').val(scriptText);
+
+  editScriptProcessorIndex = index;
+}
+
+$('#addScriptProcessorButton').click(
+  function() {
+    Glayer.showBox($('#scriptProcessorSettingBox')[0]);
+
+    // 初期化
+    $('#scriptProcessorText').val('');
+  }
+);
+
+$('#scriptProcessorSaveButton').click(
+  function() {
+    Glayer.hideBox($('#scriptProcessorSettingBox')[0]);
+
+    var scriptText = $('#scriptProcessorText').val();
+
+    if (editScriptProcessorIndex == null) {
+
+      // 追加処理
+      scriptProcessorConfig.push(scriptText);
+
+    } else {
+
+      // 更新処理
+      scriptProcessorConfig[editScriptProcessorIndex] = scriptText;
+    }
+
+    // 周期スクリプト情報更新
+    resetScriptProcessorTable();
+
+    IrcBotServer.updateScriptProcessor(channel, scriptProcessorConfig);
+  }
+);
+
+$('#scriptProcessorCancelButton').click(
+  function() {
+    Glayer.hideBox($('#scriptProcessorSettingBox')[0]);
+  }
+);
+
 
 // DWRのローディング表示用の設定
 dwr.util._disabledZoneUseCount = 0;
@@ -73,4 +352,7 @@ DWRUtil.useLoadingMessage("Loading..");
 var channel = decodeURIComponent(location.href.substring(location.href.lastIndexOf('?') + 1));
 $('#channelName').text(channel);
 
-IrcBotServer.getRssNotiferFeeds(channel, loadRssNotiferFeeds);
+// ロード処理
+IrcBotServer.getRssNotifierFeeds(channel, loadRssNotifierFeeds);
+IrcBotServer.getScriptNotifierConfig(channel, loadScriptNotifierConfig);
+IrcBotServer.getScriptProcessorConfig(channel, loadScriptProcessorConfig);

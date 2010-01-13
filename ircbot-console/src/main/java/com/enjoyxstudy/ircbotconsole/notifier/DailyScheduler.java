@@ -91,6 +91,10 @@ public class DailyScheduler implements Scheduler {
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
 
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
         nextTime = calendar.getTimeInMillis();
     }
 }

@@ -16,6 +16,7 @@
     <convert converter="exception" match="java.lang.Exception"/>
     <convert converter="bean" match="java.lang.StackTraceElement"/>
     <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.Config"/>
+    <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig"/>
 
   </allow>
 

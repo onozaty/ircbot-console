@@ -44,22 +44,22 @@ public class RssNotifier extends AbstractNotifier {
     /**
      * コンストラクタです。
      *
-     * @param target
+     * @param channel
      * @param scheduler
      * @param feedUrl
      * @param workDirectory
      * @throws NoSuchAlgorithmException
      */
-    public RssNotifier(String target, Scheduler scheduler, String feedUrl,
+    public RssNotifier(String channel, Scheduler scheduler, String feedUrl,
             File workDirectory) throws NoSuchAlgorithmException {
-        super(target, scheduler);
+        super(channel, scheduler);
 
         this.feedUrl = feedUrl;
 
         String urlHash = urlToHash(feedUrl);
 
-        this.oldFeedFile = new File(workDirectory, target + urlHash + ".old");
-        this.newFeedFile = new File(workDirectory, target + urlHash + ".new");
+        this.oldFeedFile = new File(workDirectory, channel + urlHash + ".old");
+        this.newFeedFile = new File(workDirectory, channel + urlHash + ".new");
     }
 
     /**

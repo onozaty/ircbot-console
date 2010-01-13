@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
+
 /**
  * @author onozaty
  */
@@ -37,7 +39,13 @@ public class Config implements Serializable {
     private String workDirectory = "./work";
 
     /** RSS通知を行うチャンネル名とRSSフィードリストのMapです。 */
-    private HashMap<String, ArrayList<String>> rssNotiferConfig = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<String>> rssNotifierConfig = new HashMap<String, ArrayList<String>>();
+
+    /** チャンネル名とスクリプト通知設定のMapです。 */
+    private HashMap<String, ArrayList<ScriptNotifierConfig>> scriptNotifierConfig = new HashMap<String, ArrayList<ScriptNotifierConfig>>();
+
+    /** チャンネル名とメッセージ受信スクリプトのMapです。 */
+    private HashMap<String, ArrayList<String>> scriptProcessorConfig = new HashMap<String, ArrayList<String>>();
 
     /**
      * コンストラクタです。
@@ -159,18 +167,48 @@ public class Config implements Serializable {
     }
 
     /**
-     * @return rssNotiferConfig
+     * @return rssNotifierConfig
      */
-    public HashMap<String, ArrayList<String>> getRssNotiferConfig() {
-        return rssNotiferConfig;
+    public HashMap<String, ArrayList<String>> getRssNotifierConfig() {
+        return rssNotifierConfig;
     }
 
     /**
-     * @param rssNotiferConfig rssNotiferConfig
+     * @param rssNotifierConfig rssNotifierConfig
      */
-    public void setRssNotiferConfig(
-            HashMap<String, ArrayList<String>> rssNotiferConfig) {
-        this.rssNotiferConfig = rssNotiferConfig;
+    public void setRssNotifierConfig(
+            HashMap<String, ArrayList<String>> rssNotifierConfig) {
+        this.rssNotifierConfig = rssNotifierConfig;
+    }
+
+    /**
+     * @return scriptNotifierConfig
+     */
+    public HashMap<String, ArrayList<ScriptNotifierConfig>> getScriptNotifierConfig() {
+        return scriptNotifierConfig;
+    }
+
+    /**
+     * @param scriptNotifierConfig scriptNotifierConfig
+     */
+    public void setScriptNotifierConfig(
+            HashMap<String, ArrayList<ScriptNotifierConfig>> scriptNotifierConfig) {
+        this.scriptNotifierConfig = scriptNotifierConfig;
+    }
+
+    /**
+     * @return scriptProcessorConfig
+     */
+    public HashMap<String, ArrayList<String>> getScriptProcessorConfig() {
+        return scriptProcessorConfig;
+    }
+
+    /**
+     * @param scriptProcessorConfig scriptProcessorConfig
+     */
+    public void setScriptProcessorConfig(
+            HashMap<String, ArrayList<String>> scriptProcessorConfig) {
+        this.scriptProcessorConfig = scriptProcessorConfig;
     }
 
 }

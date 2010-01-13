@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
+import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
+
 /**
  * DWR経由でIrcBotServerにアクセスするためのアダプタです。
  *
@@ -79,9 +81,9 @@ public class IrcBotServerAdapter {
      * @param target チャンネル名
      * @return RssNotiferのフィード一覧
      */
-    public synchronized ArrayList<String> getRssNotiferFeeds(String target) {
+    public synchronized ArrayList<String> getRssNotifierFeeds(String target) {
 
-        return IrcBotServer.getInstance().getConfig().getRssNotiferConfig()
+        return IrcBotServer.getInstance().getConfig().getRssNotifierConfig()
                 .get(target);
     }
 
@@ -94,10 +96,11 @@ public class IrcBotServerAdapter {
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public synchronized void addRssNotifer(String target, String feedUrl)
-            throws NoSuchAlgorithmException, InterruptedException, FileNotFoundException {
+    public synchronized void addRssNotifier(String target, String feedUrl)
+            throws NoSuchAlgorithmException, InterruptedException,
+            FileNotFoundException {
 
-        IrcBotServer.getInstance().addRssNotifer(target, feedUrl);
+        IrcBotServer.getInstance().addRssNotifier(target, feedUrl);
     }
 
     /**
@@ -109,10 +112,72 @@ public class IrcBotServerAdapter {
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public synchronized void removeRssNotifer(String target, String feedUrl)
-            throws NoSuchAlgorithmException, InterruptedException, FileNotFoundException {
+    public synchronized void removeRssNotifier(String target, String feedUrl)
+            throws NoSuchAlgorithmException, InterruptedException,
+            FileNotFoundException {
 
-        IrcBotServer.getInstance().removeRssNotifer(target, feedUrl);
+        IrcBotServer.getInstance().removeRssNotifier(target, feedUrl);
+    }
+
+    /**
+     * ScriptNotifierの設定一覧を取得します。
+     *
+     * @param target チャンネル名
+     * @return ScriptNotifierの設定一覧
+     */
+    public synchronized ArrayList<ScriptNotifierConfig> getScriptNotifierConfig(
+            String target) {
+
+        return IrcBotServer.getInstance().getConfig().getScriptNotifierConfig()
+                .get(target);
+    }
+
+    /**
+     * ScriptNotifierを更新します。
+     *
+     * @param target チャンネル名
+     * @param scriptNotifierCinfig スクリプト通知の設定
+     * @throws NoSuchAlgorithmException
+     * @throws InterruptedException
+     * @throws FileNotFoundException
+     */
+    public synchronized void updateScriptNotifier(String target,
+            ArrayList<ScriptNotifierConfig> scriptNotifierCinfig)
+            throws NoSuchAlgorithmException, InterruptedException,
+            FileNotFoundException {
+
+        IrcBotServer.getInstance().updateScriptNotifier(target,
+                scriptNotifierCinfig);
+    }
+
+    /**
+     * メッセージ受信スクリプトの設定一覧を取得します。
+     *
+     * @param target チャンネル名
+     * @return メッセージ受信スクリプト
+     */
+    public synchronized ArrayList<String> getScriptProcessorConfig(String target) {
+
+        return IrcBotServer.getInstance().getConfig()
+                .getScriptProcessorConfig().get(target);
+    }
+
+    /**
+     * メッセージ受信スクリプトを更新します。
+     *
+     * @param target チャンネル名
+     * @param scriptProcessorCinfig スクリプト通知の設定
+     * @throws NoSuchAlgorithmException
+     * @throws InterruptedException
+     * @throws FileNotFoundException
+     */
+    public synchronized void updateScriptProcessor(String target,
+            ArrayList<String> scriptProcessorCinfig)
+            throws NoSuchAlgorithmException, InterruptedException,
+            FileNotFoundException {
+
+        IrcBotServer.getInstance().updateScriptProcessor(target,
+                scriptProcessorCinfig);
     }
 
     /**

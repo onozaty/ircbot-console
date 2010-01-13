@@ -58,6 +58,35 @@ public class RecieveCommandHandler {
     }
 
     /**
+     * 指定したチャンネルとクラスのプロセッサを削除します。
+     * @param channel チャンネル名
+     * @param processorType プロセッサのClass
+     */
+    public void removeProcessors(String channel, Class<?> processorType) {
+
+        List<RecieveCommandProcessor> processorList = processorListHash
+                .get(channel);
+
+        if (processorList != null) {
+            List<RecieveCommandProcessor> removeTargerProcessor = new ArrayList<RecieveCommandProcessor>();
+            for (RecieveCommandProcessor recieveCommandProcessor : processorList) {
+                if (recieveCommandProcessor.getClass() == processorType) {
+                    removeTargerProcessor.add(recieveCommandProcessor);
+                }
+            }
+            for (RecieveCommandProcessor targetProcessor : removeTargerProcessor) {
+                processorList.remove(targetProcessor);
+            }
+
+            if (processorList.size() == 0) {
+                // チャンネルに対するプロセッサがまったく無くなった場合
+                // そのチャンネルに対するリスト自体を削除
+                processorListHash.remove(channel);
+            }
+        }
+    }
+
+    /**
      * DISCONNECTを通知します。
      *
      * @param ircBot IRCボット

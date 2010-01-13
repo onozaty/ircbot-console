@@ -41,34 +41,34 @@ public class RssNotifierCreator {
     /**
      * RssNotifierを生成します。
      *
-     * @param target チャンネル名
+     * @param channel チャンネル名
      * @param feedUrl RSSフィード
      * @return RssNotifier
      * @throws NoSuchAlgorithmException
      */
-    public RssNotifier createNotifier(String target, String feedUrl)
+    public RssNotifier createNotifier(String channel, String feedUrl)
             throws NoSuchAlgorithmException {
 
-        return new RssNotifier(target, new CyclicScheduler(NOTIFIER_CYCLE),
+        return new RssNotifier(channel, new CyclicScheduler(NOTIFIER_CYCLE),
                 feedUrl, workDirectory);
     }
 
     /**
      * RssNotifierを生成します。
      *
-     * @param targetFeedsMap チャンネル名とRSSフィードリストのマップ
+     * @param channelFeedsMap チャンネル名とRSSフィードリストのマップ
      * @return RssNotifierのリスト
      * @throws NoSuchAlgorithmException
      */
     public List<Notifier> createNotifiers(
-            HashMap<String, ArrayList<String>> targetFeedsMap)
+            HashMap<String, ArrayList<String>> channelFeedsMap)
             throws NoSuchAlgorithmException {
 
         ArrayList<Notifier> notifierList = new ArrayList<Notifier>();
 
-        for (String target : targetFeedsMap.keySet()) {
-            for (String feed : targetFeedsMap.get(target)) {
-                notifierList.add(createNotifier(target, feed));
+        for (String channel : channelFeedsMap.keySet()) {
+            for (String feed : channelFeedsMap.get(channel)) {
+                notifierList.add(createNotifier(channel, feed));
             }
         }
 
