@@ -171,18 +171,27 @@ $('#addScriptNotifierButton').click(
 
 $('#scriptNotifierSaveButton').click(
   function() {
-    Glayer.hideBox($('#scriptNotifierSettingBox')[0]);
-
     var config = {};
 
     if ($('#scriptNotifierTypeCycle').attr('checked')) {
       config.type = 0;
-      config.cyclicSpan = $('#scriptNotifierCycleSapn').val();
+      config.cyclicSpan = parseInt($('#scriptNotifierCycleSapn').val());
+
+      if (isNaN(config.cyclicSpan)) {
+        alert('周期時間に数字を入力してください。');
+        return false;
+      }
+      if (config.cyclicSpan <= 0) {
+        alert('周期時間は1以上で入力してください。');
+        return false;
+      }
     } else {
       config.type = 1;
       config.dailyHour = $('#scriptNotifierDailyHour').val();
       config.dailyMinute = $('#scriptNotifierDailyMinute').val();
     }
+
+    Glayer.hideBox($('#scriptNotifierSettingBox')[0]);
 
     config.scriptText = $('#scriptNotifierText').val();
 
@@ -330,7 +339,7 @@ $('#scriptProcessorSaveButton').click(
       scriptProcessorConfig[editScriptProcessorIndex] = scriptText;
     }
 
-    // 周期スクリプト情報更新
+    // メッセージ受信スクリプト情報更新
     resetScriptProcessorTable();
 
     IrcBotServer.updateScriptProcessor(channel, scriptProcessorConfig);
