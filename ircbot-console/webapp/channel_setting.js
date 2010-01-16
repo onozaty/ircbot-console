@@ -26,7 +26,7 @@ var addRssNotifierRow = function(feed) {
     .append('<td>').children()
       .append($('<span>')
         .attr('class', 'icons')
-        .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
+        .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeRssNotifier(feed, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(feed));
 }
@@ -111,13 +111,13 @@ var setScriptNotifierRowValue = function(scriptNotifier, tr, index) {
       .append($('<span>')
         .attr('class', 'icons')
         .append(
-          $('<a href="javascript:void(0)"><img src="./page_edit.gif"></img>変更</a>')
+          $('<a href="javascript:void(0)"><img src="./images/page_edit.gif"></img>変更</a>')
             .click(function() { editScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; }))
         .append('&nbsp;')
-        .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
+        .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(typeString))
-      .append($('<pre>').text(scriptNotifier.scriptText));
+      .append($('<pre class="code">').text(scriptNotifier.scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
 }
 
 var removeScriptNotifier = function(index, elm) {
@@ -274,12 +274,12 @@ var setScriptProcessorRowValue = function(scriptText, tr, index) {
       .append($('<span>')
         .attr('class', 'icons')
         .append(
-          $('<a href="javascript:void(0)"><img src="./page_edit.gif"></img>変更</a>')
+          $('<a href="javascript:void(0)"><img src="./images/page_edit.gif"></img>変更</a>')
             .click(function() { editScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; }))
         .append('&nbsp;')
-        .append($('<a href="javascript:void(0)"><img src="./page_cross.gif"></img>削除</a>')
+        .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<pre style="clear:both;">').text(scriptText));
+      .append($('<pre class="code" style="clear:both;">').text(scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
 }
 
 var removeScriptProcessor = function(index, elm) {

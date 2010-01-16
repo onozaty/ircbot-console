@@ -94,10 +94,13 @@ span.icons {
   float: right;
 }
 
-pre {
+pre.code {
   padding: 4px;
   border: solid 1px #737373;
   background-color: #FFFFFF;
+  max-height: 200px;
+  font-size: 90%;
+  overflow: auto;
 }
 
 div#loading {
