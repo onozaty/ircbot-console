@@ -67,6 +67,7 @@ public class ScriptProcessor extends AbstractRecieveCommandProcessor {
             }
         } catch (Exception e) {
             logger.error("スクリプト実行にてエラーが発生しました。", e);
+            throw new RuntimeException(e);
         }
     }
 

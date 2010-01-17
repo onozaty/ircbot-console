@@ -244,23 +244,23 @@ public class IrcBotServer {
     /**
      * RssNotifierを追加します。
      *
-     * @param target チャンネル名
+     * @param channel チャンネル名
      * @param feedUrl RSSフィード
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public synchronized void addRssNotifier(String target, String feedUrl)
+    public synchronized void addRssNotifier(String channel, String feedUrl)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        logger.info("RSS通知を追加します。 チャンネル名=[{}] フィード=[{}]", target, feedUrl);
+        logger.info("RSS通知を追加します。 チャンネル名=[{}] フィード=[{}]", channel, feedUrl);
 
-        ArrayList<String> feeds = config.getRssNotifierConfig().get(target);
+        ArrayList<String> feeds = config.getRssNotifierConfig().get(channel);
         if (feeds == null) {
             // チャンネルで初回の場合はリストを作成
             feeds = new ArrayList<String>();
-            config.getRssNotifierConfig().put(target, feeds);
+            config.getRssNotifierConfig().put(channel, feeds);
         }
 
         // 該当のフィードを追加し、通知スレッドを再起動
@@ -274,19 +274,19 @@ public class IrcBotServer {
     /**
      * RssNotifierを削除します。
      *
-     * @param target チャンネル名
+     * @param channel チャンネル名
      * @param feedUrl RSSフィード
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public synchronized void removeRssNotifier(String target, String feedUrl)
+    public synchronized void removeRssNotifier(String channel, String feedUrl)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        logger.info("RSS通知を削除します。 チャンネル名=[{}] フィード=[{}]", target, feedUrl);
+        logger.info("RSS通知を削除します。 チャンネル名=[{}] フィード=[{}]", channel, feedUrl);
 
-        ArrayList<String> feeds = config.getRssNotifierConfig().get(target);
+        ArrayList<String> feeds = config.getRssNotifierConfig().get(channel);
         if (feeds != null) {
             // 該当のフィードを削除し、通知スレッドを再起動
             feeds.remove(feedUrl);
@@ -300,25 +300,25 @@ public class IrcBotServer {
     /**
      * スクリプト通知を更新します。
      *
-     * @param target チャンネル名
+     * @param channel チャンネル名
      * @param scriptNotifierCinfig スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
      */
-    public synchronized void updateScriptNotifier(String target,
+    public synchronized void updateScriptNotifier(String channel,
             ArrayList<ScriptNotifierConfig> scriptNotifierCinfig)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        logger.info("スクリプト通知を更新します。 チャンネル名=[{}]", target);
+        logger.info("スクリプト通知を更新します。 チャンネル名=[{}]", channel);
 
         if (scriptNotifierCinfig == null || scriptNotifierCinfig.size() == 0) {
             // 削除
-            config.getScriptNotifierConfig().remove(target);
+            config.getScriptNotifierConfig().remove(channel);
         } else {
 
-            config.getScriptNotifierConfig().put(target, scriptNotifierCinfig);
+            config.getScriptNotifierConfig().put(channel, scriptNotifierCinfig);
         }
 
         // 通知スレッドを再起動
@@ -331,34 +331,34 @@ public class IrcBotServer {
     /**
      * メッセージ受信スクリプトを更新します。
      *
-     * @param target チャンネル名
+     * @param channel チャンネル名
      * @param scriptProcessorCinfig スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
      */
-    public synchronized void updateScriptProcessor(String target,
+    public synchronized void updateScriptProcessor(String channel,
             ArrayList<String> scriptProcessorCinfig)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        logger.info("メッセージ受信スクリプトを更新します。 チャンネル名=[{}]", target);
+        logger.info("メッセージ受信スクリプトを更新します。 チャンネル名=[{}]", channel);
 
         // 該当チャンネルのスクリプトプロセッサを削除
-        ircBot.getRecieveCommandHandler().removeProcessors(target,
+        ircBot.getRecieveCommandHandler().removeProcessors(channel,
                 ScriptProcessor.class);
 
         if (scriptProcessorCinfig == null || scriptProcessorCinfig.size() == 0) {
             // 削除
-            config.getScriptProcessorConfig().remove(target);
+            config.getScriptProcessorConfig().remove(channel);
         } else {
 
-            config.getScriptProcessorConfig()
-                    .put(target, scriptProcessorCinfig);
+            config.getScriptProcessorConfig().put(channel,
+                    scriptProcessorCinfig);
 
             for (String scriptText : config.getScriptProcessorConfig().get(
-                    target)) {
-                ircBot.getRecieveCommandHandler().addProcessor(target,
+                    channel)) {
+                ircBot.getRecieveCommandHandler().addProcessor(channel,
                         new ScriptProcessor(scriptText));
             }
         }

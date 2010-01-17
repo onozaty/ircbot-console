@@ -213,6 +213,12 @@ $('#scriptNotifierSaveButton').click(
   }
 );
 
+$('#scriptNotifierTestButton').click(
+  function() {
+    IrcBotServer.testScriptNotifier(channel, $('#scriptNotifierText').val());
+  }
+);
+
 $('#scriptNotifierCancelButton').click(
   function() {
     Glayer.hideBox($('#scriptNotifierSettingBox')[0]);
@@ -319,6 +325,15 @@ $('#addScriptProcessorButton').click(
 
     // 初期化
     $('#scriptProcessorText').val('');
+  }
+);
+
+$('#scriptProcessorTestButton').click(
+  function() {
+    var message = window.prompt('メッセージを入力してください。'); 
+    if (message != null) {
+      IrcBotServer.testScriptProcessor(channel, $('#scriptProcessorText').val(), message);
+    }
   }
 );
 
