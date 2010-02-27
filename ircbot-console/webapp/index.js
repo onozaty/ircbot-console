@@ -7,6 +7,7 @@ var loadConfig = function(_config) {
   $('#serverPassword').val(config.serverPassword || '');
   $('#nick').val(config.nick || '');
   $('#encoding').val(config.encoding || '');
+  $('#isAllowHttpMessage').attr('checked', config.allowHttpMessage);
 
   // チャンネル情報更新
   // いったんすべて削除
@@ -107,6 +108,8 @@ $('#updateConnectButton').click(
       config.nick,
       config.encoding
     );
+
+    IrcBotServer.setAllowHttpMessage($('#isAllowHttpMessage').attr('checked'));
   }
 );
 

@@ -47,6 +47,9 @@ public class Config implements Serializable {
     /** チャンネル名とメッセージ受信スクリプトのMapです。 */
     private HashMap<String, ArrayList<String>> scriptProcessorConfig = new HashMap<String, ArrayList<String>>();
 
+    /** HTTPでのメッセージ送信を許可するかを表すフラグです。 */
+    private boolean isAllowHttpMessage;
+
     /**
      * コンストラクタです。
      */
@@ -209,6 +212,20 @@ public class Config implements Serializable {
     public void setScriptProcessorConfig(
             HashMap<String, ArrayList<String>> scriptProcessorConfig) {
         this.scriptProcessorConfig = scriptProcessorConfig;
+    }
+
+    /**
+     * @return isAllowHttpMessage
+     */
+    public boolean isAllowHttpMessage() {
+        return isAllowHttpMessage;
+    }
+
+    /**
+     * @param isAllowHttpMessage isAllowHttpMessage
+     */
+    public void setAllowHttpMessage(boolean isAllowHttpMessage) {
+        this.isAllowHttpMessage = isAllowHttpMessage;
     }
 
 }

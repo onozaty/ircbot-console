@@ -434,6 +434,27 @@ public class IrcBotServer {
     }
 
     /**
+     * HTTPで受け取ったメッセージを送信します。
+     *
+     * @param channel チャンネル名
+     * @param messages メッセージ
+     * @param remoteAddr リモートIPアドレス
+     */
+    public void sendMessageFromHttp(String channel, String[] messages,
+            String remoteAddr) {
+
+        if (!config.isAllowHttpMessage()) {
+            // 許可されない場合エラー
+            throw new IllegalStateException("許可されていません。");
+        }
+
+        logger.info("HTTPで受け取ったメッセージを送信します。 リモートIP=[{}] チャンネル=[{}]",
+                remoteAddr, channel);
+
+        ircBot.sendMessages(channel, messages);
+    }
+
+    /**
      * IRCに接続します。
      *
      * @throws NickAlreadyInUseException

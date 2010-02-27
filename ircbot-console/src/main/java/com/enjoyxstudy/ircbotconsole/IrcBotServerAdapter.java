@@ -221,4 +221,23 @@ public class IrcBotServerAdapter {
     public boolean isConnected() {
         return IrcBotServer.getInstance().isConnected();
     }
+
+    /**
+     * HTTPでのメッセージ送信を許可するかを返却します。
+     *
+     * @return isAllowHttpMessage
+     */
+    public boolean isAllowHttpMessage() {
+        return IrcBotServer.getInstance().getConfig().isAllowHttpMessage();
+    }
+
+    /**
+     * HTTPでのメッセージ送信を許可を設定します。
+     *
+     * @param isAllowHttpMessage isAllowHttpMessage
+     */
+    public void setAllowHttpMessage(boolean isAllowHttpMessage) {
+        IrcBotServer.getInstance().getConfig().setAllowHttpMessage(
+                isAllowHttpMessage);
+    }
 }

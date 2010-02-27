@@ -6,17 +6,28 @@
     <servlet-class>com.enjoyxstudy.ircbotconsole.IrcBotServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  <servlet>
+    <servlet-name>ircbot-talk</servlet-name>
+    <servlet-class>com.enjoyxstudy.ircbotconsole.TalkServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
 
   <servlet>
     <servlet-name>dwr-invoker</servlet-name>
-    <servlet-class>org.directwebremoting.servlet.DwrServlet
-      </servlet-class>
+    <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
     <init-param>
       <param-name>debug</param-name>
       <param-value>true</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>ircbot-talk</servlet-name>
+    <url-pattern>/talk</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>dwr-invoker</servlet-name>
     <url-pattern>/dwr/*</url-pattern>
