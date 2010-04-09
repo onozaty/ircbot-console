@@ -134,6 +134,13 @@ div.loglist {
   margin: 1px 20px 5px 30px;
 }
 
+div.logpager {
+  width: 93%;
+  font-size: 90%;
+  margin: 1px 10px 5px 30px;
+  padding: 1px;
+}
+
 div.logview {
   width: 93%;
   font-size: 90%;

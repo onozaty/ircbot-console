@@ -3,6 +3,7 @@ package com.enjoyxstudy.ircbotconsole;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -55,16 +56,24 @@ public class LogViewer {
 
         File logFile = new File(getLogDirectory(channel), fileName);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(logFile), LogWriteProcessor.ENCODING));
+        try {
 
-        ArrayList<String> logList = new ArrayList<String>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            logList.add(line);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(logFile), LogWriteProcessor.ENCODING));
+
+            ArrayList<String> logList = new ArrayList<String>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logList.add(line);
+            }
+
+            return logList.toArray(new String[logList.size()]);
+
+        } catch (FileNotFoundException e) {
+            // 存在しない日付の場合は空の配列を返却
+            return new String[0];
         }
 
-        return logList.toArray(new String[logList.size()]);
     }
 
     /**
