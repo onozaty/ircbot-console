@@ -5,6 +5,7 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.tools.shell.Global;
 
 import com.enjoyxstudy.ircbotconsole.IrcBot;
 
@@ -40,11 +41,12 @@ public class ScriptNotifier extends AbstractNotifier {
         ContextFactory contextFactory = new ContextFactory();
         Context context = contextFactory.enterContext();
 
-        Scriptable scope = context.initStandardObjects();
+        // Rhino Shellの関数を使えるように
+        Scriptable scope = context.initStandardObjects(new Global(context));
 
         // JSのオブジェクトにマッピング
-        ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(channel,
-                scope));
+        ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(
+                channel, scope));
         ScriptableObject.putProperty(scope, "_ircBot", Context.javaToJS(ircBot,
                 scope));
 

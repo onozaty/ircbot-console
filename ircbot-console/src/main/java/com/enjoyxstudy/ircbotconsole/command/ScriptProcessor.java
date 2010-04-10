@@ -5,6 +5,7 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.tools.shell.Global;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,8 @@ public class ScriptProcessor extends AbstractRecieveCommandProcessor {
             ContextFactory contextFactory = new ContextFactory();
             Context context = contextFactory.enterContext();
 
-            Scriptable scope = context.initStandardObjects();
+            // Rhino Shellの関数を使えるように
+            Scriptable scope = context.initStandardObjects(new Global(context));
 
             // JSのオブジェクトにマッピング
             ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(
