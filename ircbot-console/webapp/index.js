@@ -108,7 +108,11 @@ $('#updateConnectButton').click(
       config.nick,
       config.encoding
     );
+  }
+);
 
+$('#isAllowHttpMessage').click(
+  function() {
     IrcBotServer.setAllowHttpMessage($('#isAllowHttpMessage').attr('checked'));
   }
 );
