@@ -106,7 +106,10 @@ $('#updateConnectButton').click(
       config.serverPort,
       config.serverPassword,
       config.nick,
-      config.encoding
+      config.encoding,
+      function() {
+        IrcBotServer.isConnected(updateStatus);
+      }
     );
   }
 );
