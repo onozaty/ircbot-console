@@ -1,13 +1,12 @@
 package com.enjoyxstudy.ircbotconsole.notifier;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.tools.shell.Global;
 
 import com.enjoyxstudy.ircbotconsole.IrcBot;
+import com.enjoyxstudy.ircbotconsole.ScriptUtils;
 
 /**
  * スクリプトを実行し、その結果を通知するクラスです。
@@ -37,12 +36,8 @@ public class ScriptNotifier extends AbstractNotifier {
     @Override
     protected String[] createMessage(IrcBot ircBot) throws Exception {
 
-        // スクリプトを実行
-        ContextFactory contextFactory = new ContextFactory();
-        Context context = contextFactory.enterContext();
-
-        // Rhino Shellの関数を使えるように
-        Scriptable scope = context.initStandardObjects(new Global(context));
+        Context context = ScriptUtils.createContext();
+        Scriptable scope = ScriptUtils.initScope(context);
 
         // JSのオブジェクトにマッピング
         ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(
