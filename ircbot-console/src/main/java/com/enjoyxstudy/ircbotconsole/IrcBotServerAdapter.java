@@ -235,9 +235,10 @@ public class IrcBotServerAdapter {
      * HTTPでのメッセージ送信を許可を設定します。
      *
      * @param isAllowHttpMessage isAllowHttpMessage
+     * @throws FileNotFoundException
      */
-    public void setAllowHttpMessage(boolean isAllowHttpMessage) {
-        IrcBotServer.getInstance().getConfig().setAllowHttpMessage(
-                isAllowHttpMessage);
+    public void setAllowHttpMessage(boolean isAllowHttpMessage)
+            throws FileNotFoundException {
+        IrcBotServer.getInstance().updateAllowHttpMessage(isAllowHttpMessage);
     }
 }

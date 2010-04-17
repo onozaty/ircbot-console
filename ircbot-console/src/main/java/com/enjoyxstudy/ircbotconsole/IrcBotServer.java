@@ -434,6 +434,25 @@ public class IrcBotServer {
     }
 
     /**
+     * HTTPでのメッセージ送信を許可を更新します。
+     *
+     * @param isAllowHttpMessage isAllowHttpMessage
+     * @throws FileNotFoundException
+     */
+    public void updateAllowHttpMessage(boolean isAllowHttpMessage)
+            throws FileNotFoundException {
+
+        logger.info("HTTPでのメッセージ送信許可を更新します。 許可=[{}]", new Boolean(
+                isAllowHttpMessage));
+
+        config.setAllowHttpMessage(isAllowHttpMessage);
+        saveConfig();
+
+        logger.info("HTTPでのメッセージ送信許可の更新が完了しました。 許可=[{}]", new Boolean(
+                isAllowHttpMessage));
+    }
+
+    /**
      * HTTPで受け取ったメッセージを送信します。
      *
      * @param channel チャンネル名
