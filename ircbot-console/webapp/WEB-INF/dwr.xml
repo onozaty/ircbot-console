@@ -17,6 +17,7 @@
     <convert converter="bean" match="java.lang.StackTraceElement"/>
     <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.Config"/>
     <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig"/>
+    <convert converter="bean" match="com.enjoyxstudy.ircbotconsole.notifier.RssNotifierConfig"/>
 
   </allow>
 

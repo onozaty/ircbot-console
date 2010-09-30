@@ -16,9 +16,6 @@ public class RssNotifierCreator {
     /** 作業用ディレクトリです。 */
     public File workDirectory;
 
-    /** 通知周期(秒)です。 */
-    private static final int NOTIFIER_CYCLE = 60; // 60秒
-
     /**
      * コンストラクタです。
      *
@@ -42,33 +39,34 @@ public class RssNotifierCreator {
      * RssNotifierを生成します。
      *
      * @param channel チャンネル名
-     * @param feedUrl RSSフィード
+     * @param config RSS情報
      * @return RssNotifier
      * @throws NoSuchAlgorithmException
      */
-    public RssNotifier createNotifier(String channel, String feedUrl)
+    public RssNotifier createNotifier(String channel, RssNotifierConfig config)
             throws NoSuchAlgorithmException {
 
-        return new RssNotifier(channel, new CyclicScheduler(NOTIFIER_CYCLE),
-                feedUrl, workDirectory);
+        return new RssNotifier(channel, new CyclicScheduler(config
+                .getCycleMinute() * 60), config.getFeedUrl(), config
+                .getMessageFormatScript(), workDirectory);
     }
 
     /**
      * RssNotifierを生成します。
      *
-     * @param channelFeedsMap チャンネル名とRSSフィードリストのマップ
+     * @param channelRssMap チャンネル名とRSS情報のマップ
      * @return RssNotifierのリスト
      * @throws NoSuchAlgorithmException
      */
     public List<Notifier> createNotifiers(
-            HashMap<String, ArrayList<String>> channelFeedsMap)
+            HashMap<String, ArrayList<RssNotifierConfig>> channelRssMap)
             throws NoSuchAlgorithmException {
 
         ArrayList<Notifier> notifierList = new ArrayList<Notifier>();
 
-        for (String channel : channelFeedsMap.keySet()) {
-            for (String feed : channelFeedsMap.get(channel)) {
-                notifierList.add(createNotifier(channel, feed));
+        for (String channel : channelRssMap.keySet()) {
+            for (RssNotifierConfig rssConfig : channelRssMap.get(channel)) {
+                notifierList.add(createNotifier(channel, rssConfig));
             }
         }
 

@@ -1,9 +1,9 @@
 // RSS通知
-var rssNotifierFeeds = [];
-var loadRssNotifierFeeds = function(_rssNotifierFeeds) {
-  rssNotifierFeeds = _rssNotifierFeeds;
-  if (rssNotifierFeeds == null) {
-    rssNotifierFeeds = [];
+var rssNotifierConfig = [];
+var loadRssNotifierConfig = function(_rssNotifierConfig) {
+  rssNotifierConfig = _rssNotifierConfig;
+  if (rssNotifierConfig == null) {
+    rssNotifierConfig = [];
   }
 
   // RSS通知フィード情報更新
@@ -13,8 +13,8 @@ var loadRssNotifierFeeds = function(_rssNotifierFeeds) {
     table.deleteRow(1);
   }
 
-  for(var i = 0, len = rssNotifierFeeds.length; i < len; i++) {
-    addRssNotifierRow(rssNotifierFeeds[i]);
+  for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
+    addRssNotifierRow(rssNotifierConfig[i].feedUrl);
   }
 
 }
@@ -34,13 +34,14 @@ var addRssNotifierRow = function(feed) {
 var removeRssNotifier = function(feed, elm) {
   elm.parentNode.removeChild(elm);
 
-  for(var i = 0, len = rssNotifierFeeds.length; i < len; i++) {
-    if(rssNotifierFeeds[i] == feed){
-      rssNotifierFeeds.splice(i,1);
+  for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
+    if(rssNotifierConfig[i].feedUrl == feed){
+      rssNotifierConfig.splice(i,1);
+      break;
     }
   }
 
-  IrcBotServer.removeRssNotifier(channel, feed);
+  IrcBotServer.updateRssNotifierConfig(channel, rssNotifierConfig);
 }
 
 $('#addRssNotifierButton').click(
@@ -51,16 +52,20 @@ $('#addRssNotifierButton').click(
       alert('RSSフィードが未入力です。');
       return false;
     }
-    if ($.inArray(feed, rssNotifierFeeds) != -1) {
-      // 既に存在
-      alert('既に登録されているRSSフィードです。');
-      return false;
+
+    for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
+      if(rssNotifierConfig[i].feedUrl == feed){
+        // 既に存在
+        alert('既に登録されているRSSフィードです。');
+        return false;
+      }
     }
+
     addRssNotifierRow(feed);
-    rssNotifierFeeds.push(feed);
+    rssNotifierConfig.push({feedUrl: feed, cycleMinute: 1});
     $('#rssNotifierFeed').val('');
 
-    IrcBotServer.addRssNotifier(channel, feed);
+    IrcBotServer.updateRssNotifierConfig(channel, rssNotifierConfig);
   }
 );
 
@@ -330,7 +335,7 @@ $('#addScriptProcessorButton').click(
 
 $('#scriptProcessorTestButton').click(
   function() {
-    var message = window.prompt('メッセージを入力してください。'); 
+    var message = window.prompt('メッセージを入力してください。');
     if (message != null) {
       IrcBotServer.testScriptProcessor(channel, $('#scriptProcessorText').val(), message);
     }
@@ -377,6 +382,6 @@ var channel = decodeURIComponent(location.href.substring(location.href.lastIndex
 $('#channelName').text(channel);
 
 // ロード処理
-IrcBotServer.getRssNotifierFeeds(channel, loadRssNotifierFeeds);
+IrcBotServer.getRssNotifierConfig(channel, loadRssNotifierConfig);
 IrcBotServer.getScriptNotifierConfig(channel, loadScriptNotifierConfig);
 IrcBotServer.getScriptProcessorConfig(channel, loadScriptProcessorConfig);

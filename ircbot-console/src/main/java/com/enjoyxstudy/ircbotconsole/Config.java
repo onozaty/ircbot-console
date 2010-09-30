@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.enjoyxstudy.ircbotconsole.notifier.RssNotifierConfig;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
 
 /**
@@ -38,8 +39,8 @@ public class Config implements Serializable {
     /** 作業ディレクトリです。 */
     private String workDirectory = "./work";
 
-    /** RSS通知を行うチャンネル名とRSSフィードリストのMapです。 */
-    private HashMap<String, ArrayList<String>> rssNotifierConfig = new HashMap<String, ArrayList<String>>();
+    /** RSS通知を行うチャンネル名とRSS情報リストのMapです。 */
+    private HashMap<String, ArrayList<RssNotifierConfig>> rssNotifierConfig = new HashMap<String, ArrayList<RssNotifierConfig>>();
 
     /** チャンネル名とスクリプト通知設定のMapです。 */
     private HashMap<String, ArrayList<ScriptNotifierConfig>> scriptNotifierConfig = new HashMap<String, ArrayList<ScriptNotifierConfig>>();
@@ -172,7 +173,7 @@ public class Config implements Serializable {
     /**
      * @return rssNotifierConfig
      */
-    public HashMap<String, ArrayList<String>> getRssNotifierConfig() {
+    public HashMap<String, ArrayList<RssNotifierConfig>> getRssNotifierConfig() {
         return rssNotifierConfig;
     }
 
@@ -180,7 +181,7 @@ public class Config implements Serializable {
      * @param rssNotifierConfig rssNotifierConfig
      */
     public void setRssNotifierConfig(
-            HashMap<String, ArrayList<String>> rssNotifierConfig) {
+            HashMap<String, ArrayList<RssNotifierConfig>> rssNotifierConfig) {
         this.rssNotifierConfig = rssNotifierConfig;
     }
 

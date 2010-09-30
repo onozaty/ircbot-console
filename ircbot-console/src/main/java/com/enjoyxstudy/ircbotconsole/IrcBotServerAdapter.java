@@ -10,6 +10,7 @@ import org.jibble.pircbot.NickAlreadyInUseException;
 
 import com.enjoyxstudy.ircbotconsole.command.ScriptProcessor;
 import com.enjoyxstudy.ircbotconsole.notifier.CyclicScheduler;
+import com.enjoyxstudy.ircbotconsole.notifier.RssNotifierConfig;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifier;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
 
@@ -79,47 +80,33 @@ public class IrcBotServerAdapter {
     }
 
     /**
-     * RssNotifierのフィード一覧を取得します。
+     * RssNotifierの設定一覧を取得します。
      *
      * @param channel チャンネル名
-     * @return RssNotiferのフィード一覧
+     * @return RssNotiferの設定一覧
      */
-    public ArrayList<String> getRssNotifierFeeds(String channel) {
+    public ArrayList<RssNotifierConfig> getRssNotifierConfig(String channel) {
 
         return IrcBotServer.getInstance().getConfig().getRssNotifierConfig()
                 .get(channel);
     }
 
     /**
-     * RssNotifierを追加します。
+     * RssNotifierを更新します。
      *
      * @param channel チャンネル名
-     * @param feedUrl RSSフィード
+     * @param rssNotifierConfig RSS通知の設定
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public void addRssNotifier(String channel, String feedUrl)
+    public void updateRssNotifierConfig(String channel,
+            ArrayList<RssNotifierConfig> rssNotifierConfig)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        IrcBotServer.getInstance().addRssNotifier(channel, feedUrl);
-    }
-
-    /**
-     * RssNotifierを削除します。
-     *
-     * @param channel チャンネル名
-     * @param feedUrl RSSフィード
-     * @throws InterruptedException
-     * @throws NoSuchAlgorithmException
-     * @throws FileNotFoundException
-     */
-    public void removeRssNotifier(String channel, String feedUrl)
-            throws NoSuchAlgorithmException, InterruptedException,
-            FileNotFoundException {
-
-        IrcBotServer.getInstance().removeRssNotifier(channel, feedUrl);
+        IrcBotServer.getInstance()
+                .updateRssNotifier(channel, rssNotifierConfig);
     }
 
     /**

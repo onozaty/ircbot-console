@@ -24,6 +24,7 @@ import com.enjoyxstudy.ircbotconsole.command.RecieveCommandHandler;
 import com.enjoyxstudy.ircbotconsole.command.ScriptProcessor;
 import com.enjoyxstudy.ircbotconsole.notifier.Notifier;
 import com.enjoyxstudy.ircbotconsole.notifier.NotifierThread;
+import com.enjoyxstudy.ircbotconsole.notifier.RssNotifierConfig;
 import com.enjoyxstudy.ircbotconsole.notifier.RssNotifierCreator;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierCreator;
@@ -242,59 +243,34 @@ public class IrcBotServer {
     }
 
     /**
-     * RssNotifierを追加します。
+     * RssNotifierを更新します。
      *
      * @param channel チャンネル名
-     * @param feedUrl RSSフィード
+     * @param rssNotifierConfig RSS通知設定
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
      */
-    public synchronized void addRssNotifier(String channel, String feedUrl)
+    public synchronized void updateRssNotifier(String channel,
+            ArrayList<RssNotifierConfig> rssNotifierConfig)
             throws NoSuchAlgorithmException, InterruptedException,
             FileNotFoundException {
 
-        logger.info("RSS通知を追加します。 チャンネル名=[{}] フィード=[{}]", channel, feedUrl);
+        logger.info("RSS通知を更新します。 チャンネル名=[{}]", channel);
 
-        ArrayList<String> feeds = config.getRssNotifierConfig().get(channel);
-        if (feeds == null) {
-            // チャンネルで初回の場合はリストを作成
-            feeds = new ArrayList<String>();
-            config.getRssNotifierConfig().put(channel, feeds);
+        if (rssNotifierConfig == null || rssNotifierConfig.size() == 0) {
+            // 削除
+            config.getRssNotifierConfig().remove(channel);
+        } else {
+
+            config.getRssNotifierConfig().put(channel, rssNotifierConfig);
         }
 
-        // 該当のフィードを追加し、通知スレッドを再起動
-        feeds.add(feedUrl);
+        // 通知スレッドを再起動
         restartNotifierThread();
 
         saveConfig();
-        logger.info("RSS通知の追加が完了しました。");
-    }
-
-    /**
-     * RssNotifierを削除します。
-     *
-     * @param channel チャンネル名
-     * @param feedUrl RSSフィード
-     * @throws InterruptedException
-     * @throws NoSuchAlgorithmException
-     * @throws FileNotFoundException
-     */
-    public synchronized void removeRssNotifier(String channel, String feedUrl)
-            throws NoSuchAlgorithmException, InterruptedException,
-            FileNotFoundException {
-
-        logger.info("RSS通知を削除します。 チャンネル名=[{}] フィード=[{}]", channel, feedUrl);
-
-        ArrayList<String> feeds = config.getRssNotifierConfig().get(channel);
-        if (feeds != null) {
-            // 該当のフィードを削除し、通知スレッドを再起動
-            feeds.remove(feedUrl);
-            restartNotifierThread();
-        }
-
-        saveConfig();
-        logger.info("RSS通知の削除が完了しました。");
+        logger.info("RSS通知の更新が完了しました。");
     }
 
     /**
@@ -423,11 +399,11 @@ public class IrcBotServer {
             ircBot.partChannel(channel);
         }
 
-        ArrayList<String> feeds = config.getRssNotifierConfig().remove(channel);
-        if (feeds != null) {
-            // 該当のフィードを削除し、通知スレッドを再起動
-            restartNotifierThread();
-        }
+        config.getRssNotifierConfig().remove(channel);
+        config.getScriptNotifierConfig().remove(channel);
+
+        // 通知スレッドを再起動
+        restartNotifierThread();
 
         saveConfig();
         logger.info("チャンネルの削除が完了しました。");

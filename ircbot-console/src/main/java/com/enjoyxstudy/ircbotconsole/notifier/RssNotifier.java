@@ -15,7 +15,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Undefined;
+
 import com.enjoyxstudy.ircbotconsole.IrcBot;
+import com.enjoyxstudy.ircbotconsole.ScriptUtils;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
@@ -35,6 +41,9 @@ public class RssNotifier extends AbstractNotifier {
     /** RSSフィードのURLです。 */
     private String feedUrl;
 
+    /** RSSのメッセージ書式のスクリプトです。 */
+    private String messageFormatScript;
+
     /** 前回取得のRSSファイルです。 */
     private File oldFeedFile;
 
@@ -47,14 +56,17 @@ public class RssNotifier extends AbstractNotifier {
      * @param channel
      * @param scheduler
      * @param feedUrl
+     * @param messageFormatScript
      * @param workDirectory
      * @throws NoSuchAlgorithmException
      */
     public RssNotifier(String channel, Scheduler scheduler, String feedUrl,
-            File workDirectory) throws NoSuchAlgorithmException {
+            String messageFormatScript, File workDirectory)
+            throws NoSuchAlgorithmException {
         super(channel, scheduler);
 
         this.feedUrl = feedUrl;
+        this.messageFormatScript = messageFormatScript;
 
         String urlHash = urlToHash(feedUrl);
 
@@ -97,7 +109,10 @@ public class RssNotifier extends AbstractNotifier {
 
             ArrayList<String> messageList = new ArrayList<String>();
             for (SyndEntry entry : newEntryList) {
-                messageList.add(entry.getTitle() + " " + entry.getLink());
+                String message = formatMessage(entry, ircBot);
+                if (message != null) {
+                    messageList.add(message);
+                }
             }
 
             return messageList.toArray(new String[messageList.size()]);
@@ -105,6 +120,55 @@ public class RssNotifier extends AbstractNotifier {
         } finally {
             connection.disconnect();
         }
+    }
+
+    /**
+     * RSS通知メッセージを整形します。
+     *
+     * @param entry
+     * @param ircBot
+     * @return メッセージ
+     * @throws IOException
+     */
+    private String formatMessage(SyndEntry entry, IrcBot ircBot)
+            throws IOException {
+
+        if (messageFormatScript == null
+                || messageFormatScript.trim().length() == 0) {
+            // 書式が設定されていない場合
+            // デフォルトの形式にて(タイトル＋URL)
+            return entry.getTitle() + " " + entry.getLink();
+        }
+
+        Context context = ScriptUtils.createContext();
+        Scriptable scope = ScriptUtils.initScope(context);
+
+        // JSのオブジェクトにマッピング
+        ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(
+                channel, scope));
+        ScriptableObject.putProperty(scope, "_ircBot", Context.javaToJS(ircBot,
+                scope));
+
+        ScriptableObject.putProperty(scope, "_title", Context.javaToJS(entry
+                .getTitle(), scope));
+        ScriptableObject.putProperty(scope, "_link", Context.javaToJS(entry
+                .getLink(), scope));
+        ScriptableObject.putProperty(scope, "_description", Context.javaToJS(
+                entry.getDescription().getValue(), scope));
+        ScriptableObject.putProperty(scope, "_updatedDate", Context.javaToJS(
+                entry.getUpdatedDate(), scope));
+        ScriptableObject.putProperty(scope, "_publishedDate", Context.javaToJS(
+                entry.getPublishedDate(), scope));
+
+        Object result = context.evaluateString(scope, messageFormatScript,
+                "<script>", 1, null);
+
+        if (result == null || result instanceof Undefined) {
+            // nullまたはundefinedの場合はメッセージを送信しない
+            return null;
+        }
+
+        return Context.toString(result);
     }
 
     /**
@@ -117,8 +181,9 @@ public class RssNotifier extends AbstractNotifier {
      * @throws FeedException
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<SyndEntry> collectNewEntry() throws FileNotFoundException,
-            IllegalArgumentException, IOException, FeedException {
+    private ArrayList<SyndEntry> collectNewEntry()
+            throws FileNotFoundException, IllegalArgumentException,
+            IOException, FeedException {
 
         Reader newFeedReader = null;
         Reader oldFeedReader = null;
@@ -221,7 +286,7 @@ public class RssNotifier extends AbstractNotifier {
      * @return ハッシュ(MD5)
      * @throws NoSuchAlgorithmException
      */
-    public String urlToHash(String url) throws NoSuchAlgorithmException {
+    private String urlToHash(String url) throws NoSuchAlgorithmException {
 
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(url.getBytes());

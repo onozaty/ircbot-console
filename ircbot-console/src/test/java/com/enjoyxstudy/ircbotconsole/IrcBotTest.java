@@ -52,7 +52,7 @@ public class IrcBotTest extends TestCase {
 
         notifierList.add(new RssNotifier("#hoge", new CyclicScheduler(60),
                 "http://b.hatena.ne.jp/entrylist?sort=hot&threshold=&mode=rss",
-                new File("work")));
+                null, new File("work")));
 
         notifierList.add(new MessageNotifier("#hoge", new CyclicScheduler(30),
                 "30秒毎に発言します。"));
