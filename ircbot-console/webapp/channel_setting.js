@@ -6,7 +6,10 @@ var loadRssNotifierConfig = function(_rssNotifierConfig) {
     rssNotifierConfig = [];
   }
 
-  // RSS通知フィード情報更新
+  resetRssNotifierTable();
+}
+
+var resetRssNotifierTable = function() {
   // いったんすべて削除
   var table = $('#rssNotifierTable')[0];
   while(table.rows.length > 1) {
@@ -14,61 +17,123 @@ var loadRssNotifierConfig = function(_rssNotifierConfig) {
   }
 
   for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
-    addRssNotifierRow(rssNotifierConfig[i].feedUrl);
+    addRssNotifierRow(rssNotifierConfig[i]);
   }
-
 }
 
-var addRssNotifierRow = function(feed) {
+var addRssNotifierRow = function(rssNotifier) {
   var table = $('#rssNotifierTable')[0];
   var tr = table.insertRow(table.rows.length);
+
+  var index = table.rows.length - 2;
+
+  setRssNotifierRowValue(rssNotifier, tr, index);
+}
+
+var setRssNotifierRowValue = function(rssNotifier, tr, index) {
   $(tr)
     .append('<td>').children()
       .append($('<span>')
         .attr('class', 'icons')
+        .append(
+          $('<a href="javascript:void(0)"><img src="./images/page_edit.gif"></img>変更</a>')
+            .click(function() { editRssNotifier(index, this.parentNode.parentNode.parentNode); return false; }))
+        .append('&nbsp;')
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
-          .click(function() { removeRssNotifier(feed, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<span>').text(feed));
+          .click(function() { removeRssNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
+      .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分)'))
+      .append($('<pre class="code">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
 }
 
-var removeRssNotifier = function(feed, elm) {
-  elm.parentNode.removeChild(elm);
+var removeRssNotifier = function(index, elm) {
 
-  for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
-    if(rssNotifierConfig[i].feedUrl == feed){
-      rssNotifierConfig.splice(i,1);
-      break;
-    }
-  }
+  rssNotifierConfig.splice(index, 1);
+
+  // RSS通知情報更新
+  resetRssNotifierTable();
 
   IrcBotServer.updateRssNotifierConfig(channel, rssNotifierConfig);
 }
 
+var editRssNotifierIndex = null;
+var editRssNotifier = function(index, elm) {
+
+  Glayer.showBox($('#rssNotifierSettingBox')[0]);
+
+  var config = rssNotifierConfig[index];
+
+  $('#rssNotifierUrl').val(config.feedUrl);
+  $('#rssNotifierCycleSapn').val(config.cycleMinute);
+  $('#rssNotifierFormatText').val(config.messageFormatScript);
+
+  editRssNotifierIndex = index;
+}
+
 $('#addRssNotifierButton').click(
   function() {
-    var feed = $('#rssNotifierFeed').val();
+    Glayer.showBox($('#rssNotifierSettingBox')[0]);
 
-    if (feed == '') {
+    // 初期化
+    $('#rssNotifierCycleSapn').val('1');
+    $('#rssNotifierUrl').val('');
+    $('#rssNotifierFormatText').val('');
+  }
+);
+
+$('#rssNotifierSaveButton').click(
+  function() {
+    var config = {
+      feedUrl: $('#rssNotifierUrl').val(),
+      cycleMinute: parseInt($('#rssNotifierCycleSapn').val()),
+      messageFormatScript: $('#rssNotifierFormatText').val()
+    };
+
+    if (config.feedUrl == '') {
       alert('RSSフィードが未入力です。');
       return false;
     }
 
     for(var i = 0, len = rssNotifierConfig.length; i < len; i++) {
-      if(rssNotifierConfig[i].feedUrl == feed){
+      if (editRssNotifierIndex == i) continue;
+      if (rssNotifierConfig[i].feedUrl == config.feedUrl) {
         // 既に存在
         alert('既に登録されているRSSフィードです。');
         return false;
       }
     }
 
-    addRssNotifierRow(feed);
-    rssNotifierConfig.push({feedUrl: feed, cycleMinute: 1});
-    $('#rssNotifierFeed').val('');
+    if (isNaN(config.cycleMinute)) {
+      alert('周期時間に数字を入力してください。');
+      return false;
+    }
+
+    Glayer.hideBox($('#rssNotifierSettingBox')[0]);
+
+    if (editRssNotifierIndex == null) {
+
+      // 追加処理
+      rssNotifierConfig.push(config);
+
+    } else {
+
+      // 更新処理
+      rssNotifierConfig[editRssNotifierIndex] = config;
+    }
+
+    // RSS通知情報更新
+    resetRssNotifierTable();
 
     IrcBotServer.updateRssNotifierConfig(channel, rssNotifierConfig);
   }
 );
 
+$('#rssNotifierCancelButton').click(
+  function() {
+    Glayer.hideBox($('#rssNotifierSettingBox')[0]);
+  }
+);
+
+//////////////////////////////////////////
 
 // 周期スクリプト
 var scriptNotifierConfig = [];
@@ -253,6 +318,7 @@ $('#scriptNotifierTypeDaily')
   .change(scriptNotifierTypeChange)
   .focus(scriptNotifierTypeChange);
 
+//////////////////////////////////////////
 
 // メッセージ受信スクリプト
 var scriptProcessorConfig = [];

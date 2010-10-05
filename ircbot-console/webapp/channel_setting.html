@@ -20,7 +20,7 @@
           </tr>
         </table>
         <div class="right">
-          RSSフィード：<input id="rssNotifierFeed" name="channel" type="text" size="100" style="width:500px;"></input><input id="addRssNotifierButton" name="addRssNotifier" type="button" value="追加"></input>
+          <input id="addRssNotifierButton" name="addRssNotifier" type="button" value="追加"></input>
         </div>
         <h2>周期スクリプト実行</h2>
         <table id="scriptNotifierTable">
@@ -45,6 +45,17 @@
     </div>
     <div id="disabledZone">
       <div id="messageZone">loading</div>
+    </div>
+    <div id="rssNotifierSettingBox" class="glayer_box" style="display: none;">
+      RSSフィード&nbsp;<input id="rssNotifierUrl" type="text" name="span" style="width:70%;"></input>&nbsp;&nbsp;
+      周期&nbsp;<input id="rssNotifierCycleSapn" type="text" name="span" size="6" style="text-align:right"></input>分&nbsp;&nbsp;
+      <br />
+      メッセージフォーマット(指定無しの場合は、デフォルトのフォーマット)<br />
+      <textarea id="rssNotifierFormatText" name="rssNotifierFormatText" cols="80" rows="10"></textarea>
+      <div style="text-align: right;">
+        <input id="rssNotifierCancelButton" type="button" name="scriptProcessorCancelButton" value="キャンセル"></input>
+        <input id="rssNotifierSaveButton" type="button" name="scriptProcessorSaveButton" value="保存"></input>
+      </div>
     </div>
     <div id="scriptNotifierSettingBox" class="glayer_box" style="display: none;">
       <input id="scriptNotifierTypeCycle" type="radio" name="scriptNotifierType" value="cycle"></input>周期&nbsp;
