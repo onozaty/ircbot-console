@@ -42,7 +42,7 @@ var setRssNotifierRowValue = function(rssNotifier, tr, index) {
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeRssNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分)'))
-      .append($('<pre class="code">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
+      .append($('<pre class="code" style="clear: both;">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
 }
 
 var removeRssNotifier = function(index, elm) {
@@ -187,7 +187,7 @@ var setScriptNotifierRowValue = function(scriptNotifier, tr, index) {
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(typeString))
-      .append($('<pre class="code">').text(scriptNotifier.scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
+      .append($('<pre class="code" style="clear: both;">').text(scriptNotifier.scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
 }
 
 var removeScriptNotifier = function(index, elm) {
@@ -365,7 +365,7 @@ var setScriptProcessorRowValue = function(scriptText, tr, index) {
         .append('&nbsp;')
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<pre class="code" style="clear:both;">').text(scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n\r')));
+      .append($('<pre class="code" style="clear:both;">').text(scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
 }
 
 var removeScriptProcessor = function(index, elm) {
