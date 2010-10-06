@@ -154,7 +154,8 @@ public class RssNotifier extends AbstractNotifier {
         ScriptableObject.putProperty(scope, "_link", Context.javaToJS(entry
                 .getLink(), scope));
         ScriptableObject.putProperty(scope, "_description", Context.javaToJS(
-                entry.getDescription().getValue(), scope));
+                entry.getDescription() != null ? entry.getDescription()
+                        .getValue() : null, scope));
         ScriptableObject.putProperty(scope, "_updatedDate", Context.javaToJS(
                 entry.getUpdatedDate(), scope));
         ScriptableObject.putProperty(scope, "_publishedDate", Context.javaToJS(
