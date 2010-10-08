@@ -31,7 +31,7 @@ var addRssNotifierRow = function(rssNotifier) {
 }
 
 var setRssNotifierRowValue = function(rssNotifier, tr, index) {
-  $(tr)
+  var td = $(tr)
     .append('<td>').children()
       .append($('<span>')
         .attr('class', 'icons')
@@ -41,8 +41,11 @@ var setRssNotifierRowValue = function(rssNotifier, tr, index) {
         .append('&nbsp;')
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeRssNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分)'))
-      .append($('<pre class="code" style="clear: both;">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
+      .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分)'));
+
+  if (rssNotifier.messageFormatScript != null && rssNotifier.messageFormatScript != '') {
+    td.append($('<pre class="code" style="clear: both;">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
+  }
 }
 
 var removeRssNotifier = function(index, elm) {
