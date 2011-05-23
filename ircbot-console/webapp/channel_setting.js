@@ -41,7 +41,7 @@ var setRssNotifierRowValue = function(rssNotifier, tr, index) {
         .append('&nbsp;')
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeRssNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分)'));
+      .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分' + (rssNotifier.basicAuthId ? ', BASIC認証あり' : '') + ')'));
 
   if (rssNotifier.messageFormatScript != null && rssNotifier.messageFormatScript != '') {
     td.append($('<pre class="code" style="clear: both;">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
@@ -67,6 +67,8 @@ var editRssNotifier = function(index, elm) {
 
   $('#rssNotifierUrl').val(config.feedUrl);
   $('#rssNotifierCycleSapn').val(config.cycleMinute);
+  $('#rssNotifierBasicUser').val(config.basicAuthId);
+  $('#rssNotifierBasicPassword').val(config.basicAuthPassword);
   $('#rssNotifierFormatText').val(config.messageFormatScript);
 
   editRssNotifierIndex = index;
@@ -79,6 +81,8 @@ $('#addRssNotifierButton').click(
     // 初期化
     $('#rssNotifierCycleSapn').val('1');
     $('#rssNotifierUrl').val('');
+    $('#rssNotifierBasicUser').val('');
+    $('#rssNotifierBasicPassword').val('');
     $('#rssNotifierFormatText').val('');
   }
 );
@@ -88,6 +92,8 @@ $('#rssNotifierSaveButton').click(
     var config = {
       feedUrl: $('#rssNotifierUrl').val(),
       cycleMinute: parseInt($('#rssNotifierCycleSapn').val()),
+      basicAuthId: $('#rssNotifierBasicUser').val(),
+      basicAuthPassword: $('#rssNotifierBasicPassword').val(),
       messageFormatScript: $('#rssNotifierFormatText').val()
     };
 

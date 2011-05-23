@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/dwr-2.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/rhino-1.7r2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-codec-1.5.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>

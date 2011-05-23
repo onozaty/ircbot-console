@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -39,16 +40,22 @@ public class RssNotifier extends AbstractNotifier {
     private static final int STREAM_BUF_SIZE = 1024;
 
     /** RSSフィードのURLです。 */
-    private String feedUrl;
+    private final String feedUrl;
 
     /** RSSのメッセージ書式のスクリプトです。 */
-    private String messageFormatScript;
+    private final String messageFormatScript;
+
+    /** BASIC認証のIDです。 */
+    private final String basicAuthId;
+
+    /** BASIC認証のパスワードです。 */
+    private final String basicAuthPassword;
 
     /** 前回取得のRSSファイルです。 */
-    private File oldFeedFile;
+    private final File oldFeedFile;
 
     /** 今回取得のRSSファイルです。 */
-    private File newFeedFile;
+    private final File newFeedFile;
 
     /**
      * コンストラクタです。
@@ -56,16 +63,21 @@ public class RssNotifier extends AbstractNotifier {
      * @param channel
      * @param scheduler
      * @param feedUrl
+     * @param basicAuthId
+     * @param basicAuthPassword
      * @param messageFormatScript
      * @param workDirectory
      * @throws NoSuchAlgorithmException
      */
     public RssNotifier(String channel, Scheduler scheduler, String feedUrl,
+            String basicAuthId, String basicAuthPassword,
             String messageFormatScript, File workDirectory)
             throws NoSuchAlgorithmException {
         super(channel, scheduler);
 
         this.feedUrl = feedUrl;
+        this.basicAuthId = basicAuthId;
+        this.basicAuthPassword = basicAuthPassword;
         this.messageFormatScript = messageFormatScript;
 
         String urlHash = urlToHash(feedUrl);
@@ -86,6 +98,16 @@ public class RssNotifier extends AbstractNotifier {
 
         HttpURLConnection connection = (HttpURLConnection) new URL(feedUrl)
                 .openConnection();
+
+        if (basicAuthId != null && basicAuthId.length() != 0) {
+            // BASIC認証あり
+            StringBuilder authorizationPropBuilder = new StringBuilder("Basic ");
+            authorizationPropBuilder.append(new String(Base64.encodeBase64((basicAuthId
+                    + ":" + basicAuthPassword).getBytes())));
+
+            connection.setRequestProperty("Authorization",
+                    authorizationPropBuilder.toString());
+        }
 
         try {
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -144,22 +166,22 @@ public class RssNotifier extends AbstractNotifier {
         Scriptable scope = ScriptUtils.initScope(context);
 
         // JSのオブジェクトにマッピング
-        ScriptableObject.putProperty(scope, "_channel", Context.javaToJS(
-                channel, scope));
-        ScriptableObject.putProperty(scope, "_ircBot", Context.javaToJS(ircBot,
-                scope));
+        ScriptableObject.putProperty(scope, "_channel",
+                Context.javaToJS(channel, scope));
+        ScriptableObject.putProperty(scope, "_ircBot",
+                Context.javaToJS(ircBot, scope));
 
-        ScriptableObject.putProperty(scope, "_title", Context.javaToJS(entry
-                .getTitle(), scope));
-        ScriptableObject.putProperty(scope, "_link", Context.javaToJS(entry
-                .getLink(), scope));
+        ScriptableObject.putProperty(scope, "_title",
+                Context.javaToJS(entry.getTitle(), scope));
+        ScriptableObject.putProperty(scope, "_link",
+                Context.javaToJS(entry.getLink(), scope));
         ScriptableObject.putProperty(scope, "_description", Context.javaToJS(
                 entry.getDescription() != null ? entry.getDescription()
                         .getValue() : null, scope));
-        ScriptableObject.putProperty(scope, "_updatedDate", Context.javaToJS(
-                entry.getUpdatedDate(), scope));
-        ScriptableObject.putProperty(scope, "_publishedDate", Context.javaToJS(
-                entry.getPublishedDate(), scope));
+        ScriptableObject.putProperty(scope, "_updatedDate",
+                Context.javaToJS(entry.getUpdatedDate(), scope));
+        ScriptableObject.putProperty(scope, "_publishedDate",
+                Context.javaToJS(entry.getPublishedDate(), scope));
 
         Object result = context.evaluateString(scope, messageFormatScript,
                 "<script>", 1, null);
@@ -249,8 +271,10 @@ public class RssNotifier extends AbstractNotifier {
     /**
      * エントリを比較し、更新されているか判定します。
      *
-     * @param newEntry 新しいエントリ
-     * @param oldEntry 古いエントリ
+     * @param newEntry
+     *            新しいエントリ
+     * @param oldEntry
+     *            古いエントリ
      * @return 更新されている場合true
      */
     private boolean isUpdateEntry(SyndEntry newEntry, SyndEntry oldEntry) {
@@ -261,8 +285,7 @@ public class RssNotifier extends AbstractNotifier {
     }
 
     /**
-     * オブジェクトの比較を行います。
-     * nullどうしの場合、trueを返却します。
+     * オブジェクトの比較を行います。 nullどうしの場合、trueを返却します。
      *
      * @param o1
      * @param o2
@@ -283,7 +306,8 @@ public class RssNotifier extends AbstractNotifier {
     /**
      * URLのハッシュを取得します。
      *
-     * @param url URL
+     * @param url
+     *            URL
      * @return ハッシュ(MD5)
      * @throws NoSuchAlgorithmException
      */

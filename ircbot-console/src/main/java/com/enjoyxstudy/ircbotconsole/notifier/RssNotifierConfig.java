@@ -18,6 +18,12 @@ public class RssNotifierConfig implements Serializable {
     /** 周期(分)です。 */
     private int cycleMinute;
 
+    /** BASIC認証のIDです。 */
+    private String basicAuthId;
+
+    /** BASIC認証のパスワードです。 */
+    private String basicAuthPassword;
+
     /** RSSのメッセージ書式のスクリプトです。 */
     private String messageFormatScript;
 
@@ -29,7 +35,8 @@ public class RssNotifierConfig implements Serializable {
     }
 
     /**
-     * @param feedUrl feedUrl
+     * @param feedUrl
+     *            feedUrl
      */
     public void setFeedUrl(String feedUrl) {
         this.feedUrl = feedUrl;
@@ -43,7 +50,8 @@ public class RssNotifierConfig implements Serializable {
     }
 
     /**
-     * @param cycleMinute cycleMinute
+     * @param cycleMinute
+     *            cycleMinute
      */
     public void setCycleMinute(int cycleMinute) {
         this.cycleMinute = cycleMinute;
@@ -57,7 +65,36 @@ public class RssNotifierConfig implements Serializable {
     }
 
     /**
-     * @param messageFormatScript messageFormatScript
+     * @return basicAuthId
+     */
+    public String getBasicAuthId() {
+        return basicAuthId;
+    }
+
+    /**
+     * @param basicAuthId
+     */
+    public void setBasicAuthId(String basicAuthId) {
+        this.basicAuthId = basicAuthId;
+    }
+
+    /**
+     * @return basicAuthPassword
+     */
+    public String getBasicAuthPassword() {
+        return basicAuthPassword;
+    }
+
+    /**
+     * @param basicAuthPassword
+     */
+    public void setBasicAuthPassword(String basicAuthPassword) {
+        this.basicAuthPassword = basicAuthPassword;
+    }
+
+    /**
+     * @param messageFormatScript
+     *            messageFormatScript
      */
     public void setMessageFormatScript(String messageFormatScript) {
         this.messageFormatScript = messageFormatScript;

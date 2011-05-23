@@ -19,7 +19,8 @@ public class RssNotifierCreator {
     /**
      * コンストラクタです。
      *
-     * @param workDirectory 作業用ディレクトリ
+     * @param workDirectory
+     *            作業用ディレクトリ
      */
     public RssNotifierCreator(String workDirectory) {
         this(new File(workDirectory));
@@ -28,7 +29,8 @@ public class RssNotifierCreator {
     /**
      * コンストラクタです。
      *
-     * @param workDirectory 作業用ディレクトリ
+     * @param workDirectory
+     *            作業用ディレクトリ
      */
     public RssNotifierCreator(File workDirectory) {
         super();
@@ -38,23 +40,27 @@ public class RssNotifierCreator {
     /**
      * RssNotifierを生成します。
      *
-     * @param channel チャンネル名
-     * @param config RSS情報
+     * @param channel
+     *            チャンネル名
+     * @param config
+     *            RSS情報
      * @return RssNotifier
      * @throws NoSuchAlgorithmException
      */
     public RssNotifier createNotifier(String channel, RssNotifierConfig config)
             throws NoSuchAlgorithmException {
 
-        return new RssNotifier(channel, new CyclicScheduler(config
-                .getCycleMinute() * 60), config.getFeedUrl(), config
-                .getMessageFormatScript(), workDirectory);
+        return new RssNotifier(channel, new CyclicScheduler(
+                config.getCycleMinute() * 60), config.getFeedUrl(),
+                config.getBasicAuthId(), config.getBasicAuthPassword(),
+                config.getMessageFormatScript(), workDirectory);
     }
 
     /**
      * RssNotifierを生成します。
      *
-     * @param channelRssMap チャンネル名とRSS情報のマップ
+     * @param channelRssMap
+     *            チャンネル名とRSS情報のマップ
      * @return RssNotifierのリスト
      * @throws NoSuchAlgorithmException
      */

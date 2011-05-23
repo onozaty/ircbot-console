@@ -24,9 +24,12 @@ import com.enjoyxstudy.ircbotconsole.notifier.RssNotifier;
 public class IrcBotTest extends TestCase {
 
     /**
-     * @throws IOException サーバに接続できなかった場合
-     * @throws IrcException IRCに加われなかった場合
-     * @throws NickAlreadyInUseException ニックネームが既に利用されていた場合
+     * @throws IOException
+     *             サーバに接続できなかった場合
+     * @throws IrcException
+     *             IRCに加われなかった場合
+     * @throws NickAlreadyInUseException
+     *             ニックネームが既に利用されていた場合
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      */
@@ -52,7 +55,7 @@ public class IrcBotTest extends TestCase {
 
         notifierList.add(new RssNotifier("#hoge", new CyclicScheduler(60),
                 "http://b.hatena.ne.jp/entrylist?sort=hot&threshold=&mode=rss",
-                null, new File("work")));
+                null, null, null, new File("work")));
 
         notifierList.add(new MessageNotifier("#hoge", new CyclicScheduler(30),
                 "30秒毎に発言します。"));
