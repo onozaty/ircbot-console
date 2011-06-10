@@ -11,9 +11,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
 import org.mozilla.javascript.Context;
@@ -56,6 +64,31 @@ public class RssNotifier extends AbstractNotifier {
 
     /** 今回取得のRSSファイルです。 */
     private final File newFeedFile;
+
+    static {
+        try {
+            // SSL証明書のチェックを行わないように
+            TrustManager[] trustManagers = { new X509TrustManager() {
+                public void checkClientTrusted(X509Certificate[] arg0,
+                        String arg1) throws CertificateException {
+                }
+
+                public void checkServerTrusted(X509Certificate[] arg0,
+                        String arg1) throws CertificateException {
+                }
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            } };
+            SSLContext sslcontext = SSLContext.getInstance("SSL");
+            sslcontext.init(null, trustManagers, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext
+                    .getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * コンストラクタです。
@@ -102,8 +135,9 @@ public class RssNotifier extends AbstractNotifier {
         if (basicAuthId != null && basicAuthId.length() != 0) {
             // BASIC認証あり
             StringBuilder authorizationPropBuilder = new StringBuilder("Basic ");
-            authorizationPropBuilder.append(new String(Base64.encodeBase64((basicAuthId
-                    + ":" + basicAuthPassword).getBytes())));
+            authorizationPropBuilder.append(new String(Base64
+                    .encodeBase64((basicAuthId + ":" + basicAuthPassword)
+                            .getBytes())));
 
             connection.setRequestProperty("Authorization",
                     authorizationPropBuilder.toString());

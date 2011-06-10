@@ -84,6 +84,8 @@ $('#addRssNotifierButton').click(
     $('#rssNotifierBasicUser').val('');
     $('#rssNotifierBasicPassword').val('');
     $('#rssNotifierFormatText').val('');
+
+    editRssNotifierIndex = null
   }
 );
 
