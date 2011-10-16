@@ -30,8 +30,7 @@ import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierConfig;
 import com.enjoyxstudy.ircbotconsole.notifier.ScriptNotifierCreator;
 
 /**
- * IRCボットのサーバです。
- * 本クラスでIRCボットの操作から、設定内容の保持など、すべての処理を管理します。
+ * IRCボットのサーバです。 本クラスでIRCボットの操作から、設定内容の保持など、すべての処理を管理します。
  *
  * @author onozaty
  */
@@ -65,8 +64,7 @@ public class IrcBotServer {
     private Thread reconnectThread;
 
     /**
-     * 基準となるディレクトリです。
-     * この配下にログや作業用ディレクトリが作成されます。
+     * 基準となるディレクトリです。 この配下にログや作業用ディレクトリが作成されます。
      */
     private File homeDirectory;
 
@@ -87,7 +85,8 @@ public class IrcBotServer {
     /**
      * 初期化を行います。
      *
-     * @param homeDirectoryPath 基準となるディレクトリ
+     * @param homeDirectoryPath
+     *            基準となるディレクトリ
      * @throws NickAlreadyInUseException
      * @throws IOException
      * @throws IrcException
@@ -245,8 +244,10 @@ public class IrcBotServer {
     /**
      * RssNotifierを更新します。
      *
-     * @param channel チャンネル名
-     * @param rssNotifierConfig RSS通知設定
+     * @param channel
+     *            チャンネル名
+     * @param rssNotifierConfig
+     *            RSS通知設定
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
@@ -276,8 +277,10 @@ public class IrcBotServer {
     /**
      * スクリプト通知を更新します。
      *
-     * @param channel チャンネル名
-     * @param scriptNotifierCinfig スクリプト通知の設定
+     * @param channel
+     *            チャンネル名
+     * @param scriptNotifierCinfig
+     *            スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
@@ -307,8 +310,10 @@ public class IrcBotServer {
     /**
      * メッセージ受信スクリプトを更新します。
      *
-     * @param channel チャンネル名
-     * @param scriptProcessorCinfig スクリプト通知の設定
+     * @param channel
+     *            チャンネル名
+     * @param scriptProcessorCinfig
+     *            スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
@@ -401,6 +406,7 @@ public class IrcBotServer {
 
         config.getRssNotifierConfig().remove(channel);
         config.getScriptNotifierConfig().remove(channel);
+        config.getChannelPasswordMap().remove(channel);
 
         // 通知スレッドを再起動
         restartNotifierThread();
@@ -412,7 +418,8 @@ public class IrcBotServer {
     /**
      * HTTPでのメッセージ送信を許可を更新します。
      *
-     * @param isAllowHttpMessage isAllowHttpMessage
+     * @param isAllowHttpMessage
+     *            isAllowHttpMessage
      * @throws FileNotFoundException
      */
     public void updateAllowHttpMessage(boolean isAllowHttpMessage)
@@ -431,9 +438,12 @@ public class IrcBotServer {
     /**
      * HTTPで受け取ったメッセージを送信します。
      *
-     * @param channel チャンネル名
-     * @param messages メッセージ
-     * @param remoteAddr リモートIPアドレス
+     * @param channel
+     *            チャンネル名
+     * @param messages
+     *            メッセージ
+     * @param remoteAddr
+     *            リモートIPアドレス
      */
     public void sendMessageFromHttp(String channel, String[] messages,
             String remoteAddr) {
@@ -509,7 +519,8 @@ public class IrcBotServer {
         ircBot.setPort(config.getServerPort());
         ircBot.setPassword(config.getServerPassword());
         ircBot.setEncoding(config.getEncoding());
-        ircBot.setAutoJoinChannels(config.getChannels());
+        ircBot.setAutoJoinChannels(config.getChannels(),
+                config.getChannelPasswordMap());
     }
 
     /**
@@ -569,6 +580,38 @@ public class IrcBotServer {
 
         // 開始
         startNotifierThread();
+    }
+
+    /**
+     * チャンネルのパスワードを変更します。
+     *
+     * @param channel
+     * @param password
+     * @throws FileNotFoundException
+     */
+    public void updateChannelPassword(String channel, String password)
+            throws FileNotFoundException {
+
+        logger.info("チャンネルのパスワードを変更します。 チャンネル名=[{}]", channel);
+
+        if (password != null && password != "") {
+            config.getChannelPasswordMap().put(channel, password);
+        } else {
+            config.getChannelPasswordMap().remove(channel);
+        }
+
+        if (ircBot.isConnected()) {
+            ircBot.partChannel(channel);
+
+            if (password != null && password != "") {
+                ircBot.joinChannel(channel, password);
+            } else {
+                ircBot.joinChannel(channel);
+            }
+        }
+
+        saveConfig();
+        logger.info("チャンネルのパスワード変更が完了しました。");
     }
 
     /**
@@ -649,6 +692,7 @@ public class IrcBotServer {
 
     /**
      * インスタンスを取得します。
+     *
      * @return IrcBotServerのインスタンス
      */
     public static IrcBotServer getInstance() {

@@ -80,9 +80,38 @@ public class IrcBotServerAdapter {
     }
 
     /**
+     * チャンネルのパスワードを取得します。
+     *
+     * @param channel
+     *            チャンネル名
+     * @return パスワード
+     */
+    public String getChannelPassword(String channel) {
+
+        return IrcBotServer.getInstance().getConfig().getChannelPasswordMap()
+                .get(channel);
+    }
+
+    /**
+     * チャンネルのパスワードをを更新します。
+     *
+     * @param channel
+     *            チャンネル名
+     * @param password
+     *            パスワード
+     * @throws FileNotFoundException
+     */
+    public void updateChannelPassword(String channel, String password)
+            throws FileNotFoundException {
+
+        IrcBotServer.getInstance().updateChannelPassword(channel, password);
+    }
+
+    /**
      * RssNotifierの設定一覧を取得します。
      *
-     * @param channel チャンネル名
+     * @param channel
+     *            チャンネル名
      * @return RssNotiferの設定一覧
      */
     public ArrayList<RssNotifierConfig> getRssNotifierConfig(String channel) {
@@ -94,8 +123,10 @@ public class IrcBotServerAdapter {
     /**
      * RssNotifierを更新します。
      *
-     * @param channel チャンネル名
-     * @param rssNotifierConfig RSS通知の設定
+     * @param channel
+     *            チャンネル名
+     * @param rssNotifierConfig
+     *            RSS通知の設定
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      * @throws FileNotFoundException
@@ -112,7 +143,8 @@ public class IrcBotServerAdapter {
     /**
      * ScriptNotifierの設定一覧を取得します。
      *
-     * @param channel チャンネル名
+     * @param channel
+     *            チャンネル名
      * @return ScriptNotifierの設定一覧
      */
     public ArrayList<ScriptNotifierConfig> getScriptNotifierConfig(
@@ -125,8 +157,10 @@ public class IrcBotServerAdapter {
     /**
      * ScriptNotifierを更新します。
      *
-     * @param channel チャンネル名
-     * @param scriptNotifierCinfig スクリプト通知の設定
+     * @param channel
+     *            チャンネル名
+     * @param scriptNotifierCinfig
+     *            スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
@@ -143,8 +177,10 @@ public class IrcBotServerAdapter {
     /**
      * ScriptNotifierをテスト実行します。
      *
-     * @param channel チャンネル名
-     * @param scriptText スクリプト
+     * @param channel
+     *            チャンネル名
+     * @param scriptText
+     *            スクリプト
      * @throws Exception
      */
     public void testScriptNotifier(String channel, String scriptText)
@@ -158,7 +194,8 @@ public class IrcBotServerAdapter {
     /**
      * メッセージ受信スクリプトの設定一覧を取得します。
      *
-     * @param channel チャンネル名
+     * @param channel
+     *            チャンネル名
      * @return メッセージ受信スクリプト
      */
     public ArrayList<String> getScriptProcessorConfig(String channel) {
@@ -170,8 +207,10 @@ public class IrcBotServerAdapter {
     /**
      * メッセージ受信スクリプトを更新します。
      *
-     * @param channel チャンネル名
-     * @param scriptProcessorCinfig スクリプト通知の設定
+     * @param channel
+     *            チャンネル名
+     * @param scriptProcessorCinfig
+     *            スクリプト通知の設定
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
      * @throws FileNotFoundException
@@ -188,9 +227,12 @@ public class IrcBotServerAdapter {
     /**
      * メッセージ受信スクリプトをテスト実行します。
      *
-     * @param channel チャンネル名
-     * @param scriptText スクリプト
-     * @param receiveMessage 受信メッセージ
+     * @param channel
+     *            チャンネル名
+     * @param scriptText
+     *            スクリプト
+     * @param receiveMessage
+     *            受信メッセージ
      */
     public void testScriptProcessor(String channel, String scriptText,
             String receiveMessage) {
@@ -221,7 +263,8 @@ public class IrcBotServerAdapter {
     /**
      * HTTPでのメッセージ送信を許可を設定します。
      *
-     * @param isAllowHttpMessage isAllowHttpMessage
+     * @param isAllowHttpMessage
+     *            isAllowHttpMessage
      * @throws FileNotFoundException
      */
     public void setAllowHttpMessage(boolean isAllowHttpMessage)

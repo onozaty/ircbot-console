@@ -30,6 +30,9 @@ public class Config implements Serializable {
     /** JOINするチャンネル名のリストです。 */
     private ArrayList<String> channels = new ArrayList<String>();
 
+    /** チャンネルに対するパスワードのMapです。 */
+    private HashMap<String, String> channelPasswordMap = new HashMap<String, String>();
+
     /** IRCサーバのエンコーディングです。 */
     private String encoding = "UTF-8";
 
@@ -66,7 +69,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param nick nick
+     * @param nick
+     *            nick
      */
     public void setNick(String nick) {
         this.nick = nick;
@@ -80,7 +84,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param serverName serverName
+     * @param serverName
+     *            serverName
      */
     public void setServerName(String serverName) {
         this.serverName = serverName;
@@ -94,7 +99,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param serverPort serverPort
+     * @param serverPort
+     *            serverPort
      */
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
@@ -108,7 +114,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param serverPassword serverPassword
+     * @param serverPassword
+     *            serverPassword
      */
     public void setServerPassword(String serverPassword) {
         this.serverPassword = serverPassword;
@@ -122,7 +129,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param channels channels
+     * @param channels
+     *            channels
      */
     public void setChannels(ArrayList<String> channels) {
         this.channels = channels;
@@ -136,7 +144,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param encoding encoding
+     * @param encoding
+     *            encoding
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
@@ -150,7 +159,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param logDirectory logDirectory
+     * @param logDirectory
+     *            logDirectory
      */
     public void setLogDirectory(String logDirectory) {
         this.logDirectory = logDirectory;
@@ -164,7 +174,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param workDirectory workDirectory
+     * @param workDirectory
+     *            workDirectory
      */
     public void setWorkDirectory(String workDirectory) {
         this.workDirectory = workDirectory;
@@ -178,7 +189,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param rssNotifierConfig rssNotifierConfig
+     * @param rssNotifierConfig
+     *            rssNotifierConfig
      */
     public void setRssNotifierConfig(
             HashMap<String, ArrayList<RssNotifierConfig>> rssNotifierConfig) {
@@ -193,7 +205,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param scriptNotifierConfig scriptNotifierConfig
+     * @param scriptNotifierConfig
+     *            scriptNotifierConfig
      */
     public void setScriptNotifierConfig(
             HashMap<String, ArrayList<ScriptNotifierConfig>> scriptNotifierConfig) {
@@ -208,7 +221,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param scriptProcessorConfig scriptProcessorConfig
+     * @param scriptProcessorConfig
+     *            scriptProcessorConfig
      */
     public void setScriptProcessorConfig(
             HashMap<String, ArrayList<String>> scriptProcessorConfig) {
@@ -223,10 +237,26 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param isAllowHttpMessage isAllowHttpMessage
+     * @param isAllowHttpMessage
+     *            isAllowHttpMessage
      */
     public void setAllowHttpMessage(boolean isAllowHttpMessage) {
         this.isAllowHttpMessage = isAllowHttpMessage;
+    }
+
+    /**
+     * @return channelPasswordMap
+     */
+    public HashMap<String, String> getChannelPasswordMap() {
+        return channelPasswordMap;
+    }
+
+    /**
+     * @param channelPasswordMap
+     *            セットする channelPasswordMap
+     */
+    public void setChannelPasswordMap(HashMap<String, String> channelPasswordMap) {
+        this.channelPasswordMap = channelPasswordMap;
     }
 
 }

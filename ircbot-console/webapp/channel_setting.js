@@ -449,6 +449,20 @@ $('#scriptProcessorCancelButton').click(
   }
 );
 
+//////////////////////////////////////////
+
+//チャンネルパスワード
+var loadChannelPassword = function(_channelPassword) {
+  $('#channelPassword').val(_channelPassword);
+}
+
+$('#changeChannelPasswordButton').click(
+function() {
+ IrcBotServer.updateChannelPassword(channel, $('#channelPassword').val());
+}
+);
+
+//////////////////////////////////////////
 
 // DWRのローディング表示用の設定
 dwr.util._disabledZoneUseCount = 0;
@@ -462,3 +476,4 @@ $('#channelName').text(channel);
 IrcBotServer.getRssNotifierConfig(channel, loadRssNotifierConfig);
 IrcBotServer.getScriptNotifierConfig(channel, loadScriptNotifierConfig);
 IrcBotServer.getScriptProcessorConfig(channel, loadScriptProcessorConfig);
+IrcBotServer.getChannelPassword(channel, loadChannelPassword);

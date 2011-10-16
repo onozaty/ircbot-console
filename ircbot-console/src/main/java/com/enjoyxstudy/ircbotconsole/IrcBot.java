@@ -2,6 +2,7 @@ package com.enjoyxstudy.ircbotconsole;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
@@ -29,10 +30,14 @@ public class IrcBot extends PircBot {
     /** 接続時にJOINするチャンネルのリストです。 */
     private ArrayList<String> autoJoinChannels = new ArrayList<String>();
 
+    /** チャンネルに対するパスワードのMapです。 */
+    private HashMap<String, String> channelPasswordMap = new HashMap<String, String>();
+
     /**
      * コンストラクタ
      *
-     * @param recieveCommandHandler 各プロセッサの呼び出しを制御するハンドラ
+     * @param recieveCommandHandler
+     *            各プロセッサの呼び出しを制御するハンドラ
      */
     public IrcBot(RecieveCommandHandler recieveCommandHandler) {
         super();
@@ -45,9 +50,12 @@ public class IrcBot extends PircBot {
     /**
      * 接続を行います。
      *
-     * @throws IOException サーバに接続できなかった場合
-     * @throws IrcException IRCに加われなかった場合
-     * @throws NickAlreadyInUseException ニックネームが既に利用されていた場合
+     * @throws IOException
+     *             サーバに接続できなかった場合
+     * @throws IrcException
+     *             IRCに加われなかった場合
+     * @throws NickAlreadyInUseException
+     *             ニックネームが既に利用されていた場合
      */
     public synchronized void connect() throws IOException, IrcException,
             NickAlreadyInUseException {
@@ -58,9 +66,12 @@ public class IrcBot extends PircBot {
     /**
      * 接続(+自動JOIN)を行います。
      *
-     * @throws IOException サーバに接続できなかった場合
-     * @throws IrcException IRCに加われなかった場合
-     * @throws NickAlreadyInUseException ニックネームが既に利用されていた場合
+     * @throws IOException
+     *             サーバに接続できなかった場合
+     * @throws IrcException
+     *             IRCに加われなかった場合
+     * @throws NickAlreadyInUseException
+     *             ニックネームが既に利用されていた場合
      */
     public synchronized void connectJoin() throws IOException, IrcException,
             NickAlreadyInUseException {
@@ -72,9 +83,12 @@ public class IrcBot extends PircBot {
     /**
      * 再接続(+自動JOIN)を行います。
      *
-     * @throws IOException サーバに接続できなかった場合
-     * @throws IrcException IRCに加われなかった場合
-     * @throws NickAlreadyInUseException ニックネームが既に利用されていた場合
+     * @throws IOException
+     *             サーバに接続できなかった場合
+     * @throws IrcException
+     *             IRCに加われなかった場合
+     * @throws NickAlreadyInUseException
+     *             ニックネームが既に利用されていた場合
      */
     public synchronized void reconnectJoin() throws IOException, IrcException,
             NickAlreadyInUseException {
@@ -88,15 +102,20 @@ public class IrcBot extends PircBot {
      */
     public void joinAutoChannels() {
         for (String channel : autoJoinChannels) {
-            joinChannel(channel);
+            String password = channelPasswordMap.get(channel);
+            if (password != null && password != "") {
+                joinChannel(channel, password);
+            } else {
+                joinChannel(channel);
+            }
         }
     }
 
     /**
-     * 指定されたニックネームのユーザがJOINしているチャンネルの一覧を
-     * 返却します。
+     * 指定されたニックネームのユーザがJOINしているチャンネルの一覧を 返却します。
      *
-     * @param nick ニックネーム
+     * @param nick
+     *            ニックネーム
      * @return JOINしているチャンネルの一覧
      */
     public final String[] getChannelsByNick(String nick) {
@@ -117,7 +136,8 @@ public class IrcBot extends PircBot {
     /**
      * チャンネル名か判定します。
      *
-     * @param target チャンネル名またはニックネーム
+     * @param target
+     *            チャンネル名またはニックネーム
      * @return チャンネル名の場合true
      */
     public static boolean isChannel(String target) {
@@ -128,8 +148,10 @@ public class IrcBot extends PircBot {
     /**
      * メッセージを送信します。
      *
-     * @param target 送信先
-     * @param messages メッセージ
+     * @param target
+     *            送信先
+     * @param messages
+     *            メッセージ
      */
     public void sendMessages(String target, String[] messages) {
         for (String message : messages) {
@@ -140,7 +162,8 @@ public class IrcBot extends PircBot {
     /**
      * サーバ名を設定します。
      *
-     * @param server サーバ名
+     * @param server
+     *            サーバ名
      */
     public void setServer(String server) {
         _server = server;
@@ -149,7 +172,8 @@ public class IrcBot extends PircBot {
     /**
      * パスワードを設定します。
      *
-     * @param password パスワード
+     * @param password
+     *            パスワード
      */
     public void setPassword(String password) {
         _password = password;
@@ -158,7 +182,8 @@ public class IrcBot extends PircBot {
     /**
      * ポート番号を設定します。
      *
-     * @param port ポート番号
+     * @param port
+     *            ポート番号
      */
     public void setPort(int port) {
         _port = port;
@@ -167,7 +192,8 @@ public class IrcBot extends PircBot {
     /**
      * Nickを設定します。
      *
-     * @param nick Nick
+     * @param nick
+     *            Nick
      */
     public void setNickName(String nick) {
         setName(nick);
@@ -176,101 +202,117 @@ public class IrcBot extends PircBot {
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /**
-     * @see org.jibble.pircbot.PircBot#onMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onMessage(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      java.lang.String)
      */
     @Override
-    public void onMessage(String channel, String sender, String login,
+    protected void onMessage(String channel, String sender, String login,
             String hostname, String message) {
         recieveCommandHandler.handleMessage(this, channel, sender, login,
                 hostname, message);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onPrivateMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onPrivateMessage(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void onPrivateMessage(String sender, String login, String hostname,
-            String message) {
+    protected void onPrivateMessage(String sender, String login,
+            String hostname, String message) {
         recieveCommandHandler.handlePrivateMessage(this, sender, login,
                 hostname, message);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onNotice(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onNotice(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      java.lang.String)
      */
     @Override
-    public void onNotice(String sourceNick, String sourceLogin,
+    protected void onNotice(String sourceNick, String sourceLogin,
             String sourceHostname, String target, String notice) {
         recieveCommandHandler.handleNotice(this, sourceNick, sourceLogin,
                 sourceHostname, target, notice);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onJoin(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onJoin(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void onJoin(String channel, String sender, String login,
+    protected void onJoin(String channel, String sender, String login,
             String hostname) {
         recieveCommandHandler
                 .handleJoin(this, channel, sender, login, hostname);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onPart(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onPart(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      java.lang.String)
      */
     @Override
-    public void onPart(String channel, String sender, String login,
+    protected void onPart(String channel, String sender, String login,
             String hostname, String reason) {
         recieveCommandHandler.handlePart(this, channel, sender, login,
                 hostname, reason);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onNickChange(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onNickChange(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void onNickChange(String oldNick, String login, String hostname,
+    protected void onNickChange(String oldNick, String login, String hostname,
             String newNick) {
         recieveCommandHandler.handleNickChange(this, oldNick, login, hostname,
                 newNick);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onKick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onKick(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String)
      */
     @Override
-    public void onKick(String channel, String kickerNick, String kickerLogin,
-            String kickerHostname, String recipientNick, String reason) {
+    protected void onKick(String channel, String kickerNick,
+            String kickerLogin, String kickerHostname, String recipientNick,
+            String reason) {
         recieveCommandHandler.handleKick(this, channel, kickerNick,
                 kickerLogin, kickerHostname, recipientNick, reason);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onQuit(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onQuit(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void onQuit(String sourceNick, String sourceLogin,
+    protected void onQuit(String sourceNick, String sourceLogin,
             String sourceHostname, String reason) {
         recieveCommandHandler.handleQuit(this, sourceNick, sourceLogin,
                 sourceHostname, reason);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onTopic(java.lang.String, java.lang.String, java.lang.String, long, boolean)
+     * @see org.jibble.pircbot.PircBot#onTopic(java.lang.String,
+     *      java.lang.String, java.lang.String, long, boolean)
      */
     @Override
-    public void onTopic(String channel, String topic, String setBy, long date,
-            boolean changed) {
+    protected void onTopic(String channel, String topic, String setBy,
+            long date, boolean changed) {
         recieveCommandHandler.handleTopic(this, channel, topic, setBy, date,
                 changed);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onMode(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onMode(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      java.lang.String)
      */
     @Override
-    public void onMode(String channel, String sourceNick, String sourceLogin,
-            String sourceHostname, String mode) {
+    protected void onMode(String channel, String sourceNick,
+            String sourceLogin, String sourceHostname, String mode) {
         recieveCommandHandler.handleMode(this, channel, sourceNick,
                 sourceLogin, sourceHostname, mode);
     }
@@ -279,12 +321,13 @@ public class IrcBot extends PircBot {
      * @see org.jibble.pircbot.PircBot#onDisconnect()
      */
     @Override
-    public void onDisconnect() {
+    protected void onDisconnect() {
         recieveCommandHandler.handleDisconnect(this);
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#sendMessage(java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#sendMessage(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public void sendMessage(String target, String message) {
@@ -302,7 +345,8 @@ public class IrcBot extends PircBot {
     }
 
     /**
-     * @param recieveCommandHandler recieveCommandHandler
+     * @param recieveCommandHandler
+     *            recieveCommandHandler
      */
     public void setRecieveCommandHandler(
             RecieveCommandHandler recieveCommandHandler) {
@@ -317,10 +361,15 @@ public class IrcBot extends PircBot {
     }
 
     /**
-     * @param autoJoinChannels autoJoinChannels
+     * @param autoJoinChannels
+     *            autoJoinChannels
+     * @param channelPasswordMap
+     *            channelPasswordMap
      */
-    public void setAutoJoinChannels(ArrayList<String> autoJoinChannels) {
+    public void setAutoJoinChannels(ArrayList<String> autoJoinChannels,
+            HashMap<String, String> channelPasswordMap) {
         this.autoJoinChannels = autoJoinChannels;
+        this.channelPasswordMap = channelPasswordMap;
     }
 
 }
