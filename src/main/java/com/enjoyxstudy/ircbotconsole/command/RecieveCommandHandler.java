@@ -26,6 +26,8 @@ public class RecieveCommandHandler {
      */
     public void addProcessor(String channel, RecieveCommandProcessor processor) {
 
+        channel = normalizeChannelName(channel);
+
         List<RecieveCommandProcessor> processorList = processorListHash
                 .get(channel);
 
@@ -45,6 +47,8 @@ public class RecieveCommandHandler {
     public void removeProcessor(String channel,
             RecieveCommandProcessor processor) {
 
+        channel = normalizeChannelName(channel);
+
         List<RecieveCommandProcessor> processorList = processorListHash
                 .get(channel);
 
@@ -63,6 +67,8 @@ public class RecieveCommandHandler {
      * @param processorType プロセッサのClass
      */
     public void removeProcessors(String channel, Class<?> processorType) {
+
+        channel = normalizeChannelName(channel);
 
         List<RecieveCommandProcessor> processorList = processorListHash
                 .get(channel);
@@ -95,6 +101,8 @@ public class RecieveCommandHandler {
 
         String[] channels = ircBot.getChannels();
 
+        channels = normalizeChannelNames(channels);
+
         // デフォルトと、ログインしているチャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
                 .get(null);
@@ -105,6 +113,7 @@ public class RecieveCommandHandler {
         }
 
         for (String channel : channels) {
+
             List<RecieveCommandProcessor> processorList = processorListHash
                     .get(channel);
             if (processorList != null) {
@@ -127,6 +136,8 @@ public class RecieveCommandHandler {
      */
     public void handleJoin(IrcBot ircBot, String channel, String sender,
             String login, String hostname) {
+
+        channel = normalizeChannelName(channel);
 
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
@@ -161,6 +172,8 @@ public class RecieveCommandHandler {
             String kickerLogin, String kickerHostname, String recipientNick,
             String reason) {
 
+        channel = normalizeChannelName(channel);
+
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
                 .get(null);
@@ -193,6 +206,8 @@ public class RecieveCommandHandler {
      */
     public void handleMessage(IrcBot ircBot, String channel, String sender,
             String login, String hostname, String message) {
+
+        channel = normalizeChannelName(channel);
 
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
@@ -227,6 +242,8 @@ public class RecieveCommandHandler {
     public void handleMode(IrcBot ircBot, String channel, String sourceNick,
             String sourceLogin, String sourceHostname, String mode) {
 
+        channel = normalizeChannelName(channel);
+
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
                 .get(null);
@@ -260,6 +277,8 @@ public class RecieveCommandHandler {
             String hostname, String newNick) {
 
         String[] channels = ircBot.getChannelsByNick(newNick);
+
+        channels = normalizeChannelNames(channels);
 
         // デフォルトと、ニックネーム変更したユーザがJOINしているチャンネルの
         // プロセッサに通知
@@ -301,6 +320,8 @@ public class RecieveCommandHandler {
         // チャンネルに対するメッセージの場合のみ通知
         if (IrcBot.isChannel(target)) {
 
+            target = normalizeChannelName(target);
+
             // デフォルトと、指定チャンネルのプロセッサに通知
             List<RecieveCommandProcessor> defaultProcessorList = processorListHash
                     .get(null);
@@ -334,6 +355,8 @@ public class RecieveCommandHandler {
      */
     public void handlePart(IrcBot ircBot, String channel, String sender,
             String login, String hostname, String reason) {
+
+        channel = normalizeChannelName(channel);
 
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
@@ -392,6 +415,8 @@ public class RecieveCommandHandler {
 
         String[] channels = ircBot.getChannelsByNick(sourceNick);
 
+        channels = normalizeChannelNames(channels);
+
         // デフォルトと、QuitしたユーザがJOINしていたチャンネルの
         // プロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
@@ -428,6 +453,8 @@ public class RecieveCommandHandler {
     public void handleTopic(IrcBot ircBot, String channel, String topic,
             String setBy, long date, boolean changed) {
 
+        channel = normalizeChannelName(channel);
+
         // デフォルトと、指定チャンネルのプロセッサに通知
         List<RecieveCommandProcessor> defaultProcessorList = processorListHash
                 .get(null);
@@ -451,13 +478,15 @@ public class RecieveCommandHandler {
      * IrcBotの発言になります。
      *
      * @param ircBot IRCボット
-    * @param target 送信先(チャンネルまたはニックネーム)
+     * @param target 送信先(チャンネルまたはニックネーム)
      * @param message メッセージ
      */
     public void handleSendMessage(IrcBot ircBot, String target, String message) {
 
         // チャンネルに対するメッセージの場合のみ通知
         if (IrcBot.isChannel(target)) {
+
+            target= normalizeChannelName(target);
 
             // デフォルトと、指定チャンネルのプロセッサに通知
             List<RecieveCommandProcessor> defaultProcessorList = processorListHash
@@ -478,4 +507,39 @@ public class RecieveCommandHandler {
         }
     }
 
+    /**
+     * チャンネル名を正規化します。
+     *
+     * @param chanel 正規化前のチャンネル名
+     * @return 正規化したチャンネル名
+     */
+    private String normalizeChannelName(String channel) {
+
+        if (channel == null) {
+            return null;
+        }
+
+        return channel.toLowerCase();
+    }
+
+    /**
+     * チャンネル名を正規化します。
+     *
+     * @param chanels 正規化前のチャンネル名
+     * @return 正規化したチャンネル名
+     */
+    private String[] normalizeChannelNames(String[] channels) {
+
+        if (channels == null) {
+            return null;
+        }
+
+        String[] normalizeChannels = new String[channels.length];
+        for (int i = 0; i < channels.length; i++){
+
+            normalizeChannels[i] = normalizeChannelName(channels[i]);
+        }
+
+        return normalizeChannels;
+    }
 }
