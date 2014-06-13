@@ -247,6 +247,8 @@ $('#addScriptNotifierButton').click(
     $('#scriptNotifierDailyMinute').val(0);
 
     scriptNotifierTypeChange();
+
+    editScriptNotifierIndex = null;
   }
 );
 
@@ -407,6 +409,8 @@ $('#addScriptProcessorButton').click(
 
     // 初期化
     $('#scriptProcessorText').val('');
+
+    editScriptProcessorIndex = null;
   }
 );
 
