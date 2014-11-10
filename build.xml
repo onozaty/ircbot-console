@@ -53,7 +53,7 @@
             <classpath refid="classpath"/>
         </javac>
 
-        <zip destfile="ircbot_console-1.6.zip" basedir="${dist.dir}" />
+        <zip destfile="ircbot_console-1.6-handle-notice.zip" basedir="${dist.dir}" />
         <delete dir="${dist.dir}" />
     </target>
 </project>
