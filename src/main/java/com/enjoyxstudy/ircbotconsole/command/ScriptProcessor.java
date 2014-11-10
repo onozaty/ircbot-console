@@ -69,4 +69,14 @@ public class ScriptProcessor extends AbstractRecieveCommandProcessor {
         }
     }
 
+    /**
+     * @see com.enjoyxstudy.ircbotconsole.command.AbstractRecieveCommandProcessor#onNotice(com.enjoyxstudy.ircbotconsole.IrcBot, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void onNotice(IrcBot ircBot, String sourceNick, String sourceLogin,
+            String sourceHostname, String channel, String notice) {
+        // onMessageと同じことを実施
+        onMessage(ircBot, channel, sourceNick, sourceLogin, sourceHostname, notice);
+    }
+
 }
