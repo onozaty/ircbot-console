@@ -429,7 +429,7 @@ $('#addScriptProcessorButton').click(
 
 $('#scriptProcessorTestButton').click(
   function() {
-    var message = window.prompt('メッセージを入力してください。');
+    var message = window.prompt('メッセージを入力してください。', '');
     if (message != null) {
       IrcBotServer.testScriptProcessor(channel, $('#scriptProcessorText').val(), message);
     }
