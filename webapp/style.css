@@ -55,6 +55,7 @@ table {
   font-size: 90%;
   border-collapse: collapse;
   margin: 5px 20px 5px 30px;
+  table-layout: fixed;
 }
 th {
   padding: 2px 4px 2px 4px;
@@ -102,12 +103,9 @@ span.icons {
   float: right;
 }
 
-pre.code {
-  padding: 4px;
+pre code {
   border: solid 1px #737373;
-  background-color: #FFFFFF;
   max-height: 300px;
-  font-size: 100%;
   overflow: auto;
 }
 

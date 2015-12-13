@@ -1,3 +1,13 @@
+// 共通
+var createPreCode = function(codeText) {
+
+  var code = $('<code>').text(codeText);
+  hljs.highlightBlock(code[0]);
+
+  return $('<pre class="javascript" style="clear: both;">').append(code);
+}
+
+
 // RSS通知
 var rssNotifierConfig = [];
 var loadRssNotifierConfig = function(_rssNotifierConfig) {
@@ -44,7 +54,8 @@ var setRssNotifierRowValue = function(rssNotifier, tr, index) {
       .append($('<p>').text(rssNotifier.feedUrl + '  (周期 ' + rssNotifier.cycleMinute + '分' + (rssNotifier.basicAuthId ? ', BASIC認証あり' : '') + ')'));
 
   if (rssNotifier.messageFormatScript != null && rssNotifier.messageFormatScript != '') {
-    td.append($('<pre class="code" style="clear: both;">').text(rssNotifier.messageFormatScript.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
+    td.append(
+      createPreCode(rssNotifier.messageFormatScript));
   }
 }
 
@@ -198,7 +209,8 @@ var setScriptNotifierRowValue = function(scriptNotifier, tr, index) {
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptNotifier(index, this.parentNode.parentNode.parentNode); return false; })))
       .append($('<span>').text(typeString))
-      .append($('<pre class="code" style="clear: both;">').text(scriptNotifier.scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
+      .append(
+        createPreCode(scriptNotifier.scriptText));
 }
 
 var removeScriptNotifier = function(index, elm) {
@@ -378,7 +390,8 @@ var setScriptProcessorRowValue = function(scriptText, tr, index) {
         .append('&nbsp;')
         .append($('<a href="javascript:void(0)"><img src="./images/page_cross.gif"></img>削除</a>')
           .click(function() { removeScriptProcessor(index, this.parentNode.parentNode.parentNode); return false; })))
-      .append($('<pre class="code" style="clear:both;">').text(scriptText.replace(/\x0d\x0a|\x0d|\x0a/g,'\n')));
+      .append(
+        createPreCode(scriptText));
 }
 
 var removeScriptProcessor = function(index, elm) {
