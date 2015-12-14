@@ -61,6 +61,10 @@ var setRssNotifierRowValue = function(rssNotifier, tr, index) {
 
 var removeRssNotifier = function(index, elm) {
 
+  if (!confirm('削除してよろしいですか？')) {
+    return;
+  }
+
   rssNotifierConfig.splice(index, 1);
 
   // RSS通知情報更新
@@ -214,6 +218,10 @@ var setScriptNotifierRowValue = function(scriptNotifier, tr, index) {
 }
 
 var removeScriptNotifier = function(index, elm) {
+
+  if (!confirm('削除してよろしいですか？')) {
+    return;
+  }
 
   scriptNotifierConfig.splice(index, 1);
 
@@ -395,6 +403,10 @@ var setScriptProcessorRowValue = function(scriptText, tr, index) {
 }
 
 var removeScriptProcessor = function(index, elm) {
+
+  if (!confirm('削除してよろしいですか？')) {
+    return;
+  }
 
   scriptProcessorConfig.splice(index, 1);
 
