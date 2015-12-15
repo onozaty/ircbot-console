@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="ircbot">
     <property name="dist.dir" value="dist"/>
+    <property name="work.dir" value="work"/>
     <property name="classes.dir" value="webapp/WEB-INF/classes"/>
     <path id="classpath">
         <pathelement location="${classes.dir}"/>
@@ -13,8 +14,8 @@
     </path>
 
     <target name="init">
-        <delete dir="${dist.dir}" />
-        <mkdir dir="${dist.dir}" />
+        <delete dir="${work.dir}" />
+        <mkdir dir="${work.dir}" />
         <delete dir="${classes.dir}"/>
         <mkdir dir="${classes.dir}"/>
         <copy includeemptydirs="false" todir="${classes.dir}">
@@ -43,17 +44,18 @@
     </target>
 
     <target name="jettyfiles">
-        <copy todir="${dist.dir}/lib_jetty">
+        <copy file="${dist.dir}/ircbot.war" todir="${work.dir}" />
+        <copy todir="${work.dir}/lib_jetty">
             <fileset dir="lib_jetty" />
         </copy>
-        <copy file="startup.bat" todir="${dist.dir}" />
-        <copy file="startup.sh" todir="${dist.dir}" />
-        <javac encoding="utf-8" debug="true" destdir="${dist.dir}">
+        <copy file="startup.bat" todir="${work.dir}" />
+        <copy file="startup.sh" todir="${work.dir}" />
+        <javac encoding="utf-8" debug="true" destdir="${work.dir}">
             <src path="src/jetty/java"/>
             <classpath refid="classpath"/>
         </javac>
 
-        <zip destfile="ircbot_console-1.6.zip" basedir="${dist.dir}" />
-        <delete dir="${dist.dir}" />
+        <zip destfile="${dist.dir}/ircbot_console-1.7.zip" basedir="${work.dir}" />
+        <delete dir="${work.dir}" />
     </target>
 </project>
