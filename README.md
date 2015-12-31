@@ -1,4 +1,4 @@
 ircbot-console
 ==============
 
-ircbot web console.
+* [IRCbot Console](http://www.enjoyxstudy.com/ircbotconsole/ "IRCbot Console")
